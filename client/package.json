@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "parcel ./public/index.html",
-    "build": "parcel build ./public/index.html"
+    "build": "parcel build ./public/index.html --no-cache"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@rematch/core": "^1.0.0-beta.4",
     "antd": "^3.9.2",
+    "lodash": "^4.17.11",
     "node-sass": "^4.9.3",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",

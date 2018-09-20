@@ -1,8 +1,8 @@
-import React from 'react'
+import * as React from 'react'
 
 import Test from './test'
 
-class Home extends React.Component {
+class Home extends React.Component<any, any> {
   render () {
     return (
       <div>

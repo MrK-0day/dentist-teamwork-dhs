@@ -1,10 +1,18 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 
 // Import Config
 import './config/configPage'
 
 // Import Screen
-import Home from './screens/home/Home'
+import Router from './screens/Router'
 
-ReactDOM.render(<Home />, document.getElementById('root'))
+// Import Store Rematch
+import { store } from './modules/rematch/store'
+
+ReactDOM.render(
+  <Provider store={store}>
+    <Router />
+  </Provider>
+  , document.getElementById('root'))

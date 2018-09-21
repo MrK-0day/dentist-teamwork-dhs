@@ -1,15 +1,23 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 
-import Test from './test'
+import { SiderNav } from '../../components/sidenav/SiderNav'
 
 class Home extends React.Component<any, any> {
+  componentWillMount () {
+    this.props.setState('isSelectMenuItem', 'dashboard')
+  }
   render () {
     return (
       <div>
-        <Test />
+        <SiderNav props={this.props} />
       </div>
     )
   }
 }
 
-export default Home
+const mapState = (state: any) => state.Home
+
+const mapDispatch = (dispatch: any) => dispatch.Home
+
+export default connect(mapState, mapDispatch)(Home)

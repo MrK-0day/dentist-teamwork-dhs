@@ -2,18 +2,18 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const PatientSchema = new Schema({
-  _id:            String,
-  fullname:       String,
+  _id:            String, // !
+  fullname:       String, // !
   gender:         String,
-  dob:            Date,
-  career:         Number,
+  dob:            String,
+  career:         String,
   address:        String,
-  phone:          Array,
+  phone:          String, // !
   nationality:    String,
   email:          String,
   refby:          String,
   medicalrecord:  Array,
-  isEnabled:      Boolean
+  isEnabled:      Boolean // !
 })
 
 module.exports = mongoose.model('Patient', PatientSchema)

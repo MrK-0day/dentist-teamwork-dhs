@@ -22,7 +22,7 @@ const _ListBoxCard = [
   }
 ]
 
-export const ContentDashboard = ({ props: any }) => {
+export const ContentDashboard = ({ props } : { props: any }) => {
   return (
     <div className='animated fadeIn'>
       <Row>

@@ -5,7 +5,7 @@ import { SiderNav } from '../../components/sidenav/SiderNav'
 
 class Home extends React.Component<any, any> {
   componentWillMount () {
-    this.props.setState('isSelectMenuItem', 'dashboard')
+    this.props.setState('isSelectMenuItem', 'quanlybenhnhan')
   }
   render () {
     return (

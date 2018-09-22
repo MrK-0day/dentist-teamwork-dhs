@@ -9,10 +9,10 @@ const PatientSchema = new Schema({
   career:         String,
   address:        String,
   phone:          String, // !
-  nationality:    String,
   email:          String,
+  nationality:    String,
   refby:          String,
-  medicalrecord:  Array,
+  medicalhistory: Array,
   isEnabled:      Boolean // !
 })
 

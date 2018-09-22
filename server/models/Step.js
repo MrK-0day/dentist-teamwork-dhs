@@ -3,9 +3,10 @@ const Schema = mongoose.Schema
 
 const StepSchema = new Schema({
   _id:        String, // !
+  recordid:   String, // !
   code:       String, // !
   name:       String,
-  content:    String,
+  content:    String, // !
   state:      Number, // !
   isEnabled:  Boolean // !
 })

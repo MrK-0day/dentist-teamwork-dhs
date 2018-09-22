@@ -3,13 +3,15 @@ const Schema = mongoose.Schema
 
 const RecordSchema = new Schema({
   _id:          String, // !
+  patientid:    String, // !
   recordnumber: Number, // !
   no:           Number, // !
-  cost:         Number, // !
-  paid:         Number, // !
-  datecreated:  String, // !
   teeth:        Array, // !
+  cost:         Number, // !
+  paid:         Number,
+  createddate:  Number, // !
   treatment:    String, // !
+  doctorid:     String, // !
   isEnabled:    Boolean // !
 })
 

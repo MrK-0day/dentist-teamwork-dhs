@@ -5,7 +5,7 @@ const DoctorSchema = new Schema({
   _id:        String, // !
   fullname:   String, // !
   specialize: String,
-  phone:      String,
+  phone:      String, // !
   isEnabled:  Boolean // !
 })
 

@@ -7,8 +7,8 @@ const ScheduleSchema = new Schema({
   doctorid:   String, // !
   stepid:     String, // !
   patientid:  String, // !
-  content:    String,
   roomId:     String, // !
+  content:    String,
   isEnabled:  Boolean
 })
 

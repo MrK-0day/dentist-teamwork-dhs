@@ -1,8 +1,8 @@
 const { gql, PubSub, ApolloError } = require('apollo-server-express')
-const pubsub = new PubSub()
-const jwt = require('jsonwebtoken')
+// const pubsub = new PubSub()
+// const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
-const _ = require('lodash')
+// const _ = require('lodash')
 
 // models
 const Doctor = require('./models/Doctor')
@@ -12,8 +12,6 @@ const Room = require('./models/Room')
 const Schedule = require('./models/Schedule')
 const Step = require('./models/Step')
 
-const SCHEDULE_UPDATE = 'SCHEDULE_UPDATE'
-
 const typeDefs = gql`
   type Doctor {
     _id:            String
@@ -21,6 +19,8 @@ const typeDefs = gql`
     specialize:     String
     phone:          String
     isEnabled:      Boolean
+    records:        [Record]
+    schedules:      [Schedule]
   }
   type Patient {
     _id:            ID
@@ -33,8 +33,9 @@ const typeDefs = gql`
     nationality:    String
     email:          String
     refby:          String
-    medicalrecord:  [Int]
+    medicalhistory: [String]
     isEnabled:      Boolean
+    records:        [Record]
   }
   type Teeth {
     code:           String
@@ -43,20 +44,26 @@ const typeDefs = gql`
   }
   type Record {
     _id:            String
+    patientid:      String
     recordnumber:   Int
     no:             Int
+    teeth:          [Teeth]
     cost:           Int
     paid:           Int
-    datecreated:    String
-    teeth:          [Teeth]
+    createddate:    String
     treatment:      String
+    doctorid:       String
     isEnabled:      Boolean
+    doctor:         Doctor
+    steps:          [Step]
+    patient:        Patient
   }
   type Room {
     _id:            String
     code:           String
     name:           String
     isEnabled:      Boolean
+    schedules:      [Schedule]
   }
   type Schedule {
     _id:            String
@@ -64,17 +71,24 @@ const typeDefs = gql`
     doctorid:       String
     stepid:         String
     patientid:      String
-    content:        String
     roomId:         String
+    content:        String
     isEnabled:      Boolean
+    doctor:         Doctor
+    step:           Step
+    patient:        Patient
+    room:           Room
   }
   type Step {
     _id:            String
+    recordid:       String
     code:           String
     name:           String
     content:        String
     state:          Int
     isEnabled:      Boolean
+    record:         Record
+    schedules:      [Schedule]
   }
 
   type Query {
@@ -95,8 +109,13 @@ const typeDefs = gql`
   type Mutation {
     # reset Data
     resetAll(confirm: String!): Boolean
+
     # Patient
-    addPatient(fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refby: String, medicalrecord: [String], isEnabled: Boolean!): Patient
+    # addPatient(fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refby: String, medicalhistory: [String]): Patient
+
+
+    # Record
+    # addRecord(recordnumber: Int!, no: Int!, cost: Int!, paid: Int!, createddate: Int!, treatment: String!): Record
   }
 `
 //   type Mutation {
@@ -129,15 +148,26 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
+    doctor: (root, args, context, info) => Doctor.findById(args._id),
+    getDoctors: (root, args, context, info) => Doctor.find({ isEnabled: true }),
     patient: (root, args, context, info) => Patient.findById(args._id),
-    getPatients: (root, args, context, info) => Patient.find({isEnabled: true})
-    // room: (root, args, context, info) => Room.findById(args._id),
-    // user: (root, args, context, info) => User.findById(args._id),
-    // schedule: (root, args, context, info) => Schedule.findById(args._id),
-    // getUsers: (root, args, context, info) => User.find({isEnabled: true}),
-    // getRooms: (root, args, context, info) => Room.find({isEnabled: true}),
-    // getSchedules: (root, args, context, info) => Schedule.find()
+    getPatients: (root, args, context, info) => Patient.find({ isEnabled: true }),
+    record: (root, args, context, info) => Record.findById(args._id),
+    getRecords: (root, args, context, info) => Record.find({ isEnabled: true }),
+    room: (root, args, context, info) => Room.findById(args._id),
+    getRooms: (root, args, context, info) => Room.find({ isEnabled: true }),
+    schedule: (root, args, context, info) => Schedule.findById(args._id),
+    getSchedules: (root, args, context, info) => Schedule.find({ isEnabled: true }),
+    step: (root, args, context, info) => Step.findById(args._id),
+    getSteps: (root, args, context, info) => Step.find({ isEnabled: true })
   },
+
+  // Patient: {
+  //   records (room) {
+  //     return Record.find({ roomId: room._id, isEnabled: true })
+  //   }
+  // },
+
   Mutation: {
     // RESET DATA
     resetAll: (root, args) => {
@@ -154,11 +184,21 @@ const resolvers = {
     },
 
     // PATIENT
-    addPatient: (root, args) => {
-      args._id = mongoose.Types.ObjectId()
-      let newPatient = new Patient(args)
-      return newPatient.save()
-    },
+    // addPatient: (root, args) => {
+    //   args._id = mongoose.Types.ObjectId()
+    //   args.isEnabled = true
+    //   let newPatient = new Patient(args)
+    //   return newPatient.save()
+    // },
+
+    // RECORD
+    // addRecord: (root, args) => {
+    //   args._id = mongoose.Types.ObjectId()
+    //   // generate teeth array
+    //   args.isEnabled = true
+    //   let newRecord = new Record(args)
+    //   return newRecord.save()
+    // }
   }
   // Room: {
   //   seats (room) {
@@ -182,17 +222,6 @@ const resolvers = {
   //   }
   // },
   // Mutation: {
-  //   // RESET DATA
-  //   resetAll: (root, args) => {
-  //     if (args.confirm === 'yes') {
-  //       Seat.remove({}).exec()
-  //       Room.remove({}).exec()
-  //       User.remove({}).exec()
-  //       Schedule.remove({}).exec()
-  //       return true
-  //     }
-  //     return false
-  //   },
   //   // AUTH
   //   login: async (root, args, {session, req}) => {
   //     console.log(args)
@@ -270,4 +299,4 @@ const resolvers = {
   // }
 }
 
-module.exports = {typeDefs, resolvers}
+module.exports = { typeDefs, resolvers }

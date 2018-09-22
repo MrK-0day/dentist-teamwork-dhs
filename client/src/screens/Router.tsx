@@ -8,7 +8,6 @@ import '../css/theme.css'
 
 // Import Screen
 import Home from './home/Home'
-import Patient from './patient/Patient'
 
 class Router extends React.Component<any, any> {
   render () {
@@ -16,7 +15,6 @@ class Router extends React.Component<any, any> {
       <BrowserRouter>
         <Switch>
           <Route exact path='/' render={() => <Home />} />
-          <Route path='/patient' render={()=> <Patient />} />
         </Switch>
       </BrowserRouter>
     )

@@ -1,6 +1,4 @@
-//lib
 import * as React from 'react'
-//framework
 import { Table, Button } from 'antd'
 
 const columns = [
@@ -58,17 +56,8 @@ const columns = [
   }
 ]
 
-class Patient extends React.Component<any, any> {
-    componentWillMount () {
-      this.props.setState('isSelectMenuItem', 'quanlybenhnhan')
-    }
-    render () {
-      return (
-        <div>
-          <Table columns={columns}/>
-        </div>
-      )
-    }
+export const ContentPatient = ({ props } : { props: any }) => {
+  return (
+    <Table columns={columns}/>
+  )
 }
-
-export default Patient

@@ -4,7 +4,7 @@
   "description": "",
   "main": "./src/index.js",
   "scripts": {
-    "start": "parcel ./public/index.html",
+    "start": "parcel ./public/index.html --open",
     "build": "parcel build ./public/index.html --no-cache"
   },
   "keywords": [],

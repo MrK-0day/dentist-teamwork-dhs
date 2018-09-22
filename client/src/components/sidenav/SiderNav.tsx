@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Layout, Menu, Icon } from 'antd'
 
 import { ContentDashboard } from '../content/ContentDashboard'
+import { ContentPatient } from '../content/ContentPatient'
 
 const _ListMenuItem = [
   {
@@ -33,7 +34,6 @@ const _ListMenuItem = [
 
 export const SiderNav = ({ props: { isCollapsed, onCollapsed, setState }, props } : { props: any }) => {
   function onSelectMenuItem ({ selectedKeys } : { selectedKeys: any }) {
-    console.log(props)
     setState('isSelectMenuItem', selectedKeys[0])
   }
   return (
@@ -52,6 +52,7 @@ export const SiderNav = ({ props: { isCollapsed, onCollapsed, setState }, props 
       </Layout.Sider>
       <Layout style={{ padding: 10 }}>
         {props.isSelectMenuItem === 'dashboard' && <ContentDashboard props={props} />}
+        {props.isSelectMenuItem === 'quanlybenhnhan' && <ContentPatient props={props} />}
       </Layout>
     </Layout>
   )

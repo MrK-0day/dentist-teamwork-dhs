@@ -11,8 +11,8 @@ const PatientSchema = new Schema({
   phone:          String, // !
   email:          String,
   nationality:    String,
-  refby:          String,
-  medicalhistory: Array,
+  refBy:          String,
+  medicalHistory: Array,
   isEnabled:      Boolean // !
 })
 

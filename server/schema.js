@@ -14,7 +14,7 @@ const Step = require('./models/Step')
 
 const typeDefs = gql`
   type Doctor {
-    _id:            String
+    _id:            ID
     fullname:       String
     specialize:     String
     phone:          String
@@ -32,10 +32,11 @@ const typeDefs = gql`
     phone:          String
     nationality:    String
     email:          String
-    refby:          String
-    medicalhistory: [String]
+    refBy:          String
+    medicalHistory: [String]
     isEnabled:      Boolean
     records:        [Record]
+    schedules:      [Schedule]
   }
   type Teeth {
     code:           String
@@ -43,45 +44,45 @@ const typeDefs = gql`
     note:           String
   }
   type Record {
-    _id:            String
-    patientid:      String
-    recordnumber:   Int
+    _id:            ID
+    patientId:      String
+    recordNumber:   Int
     no:             Int
     teeth:          [Teeth]
     cost:           Int
     paid:           Int
-    createddate:    String
+    createdDate:    Int
     treatment:      String
-    doctorid:       String
+    doctorId:       String
     isEnabled:      Boolean
     doctor:         Doctor
-    steps:          [Step]
     patient:        Patient
+    steps:          [Step]
   }
   type Room {
-    _id:            String
+    _id:            ID
     code:           String
     name:           String
     isEnabled:      Boolean
     schedules:      [Schedule]
   }
   type Schedule {
-    _id:            String
+    _id:            ID
     timestamp:      Int
-    doctorid:       String
-    stepid:         String
-    patientid:      String
+    doctorId:       String
+    stepId:         String
+    patientId:      String
     roomId:         String
     content:        String
     isEnabled:      Boolean
     doctor:         Doctor
-    step:           Step
     patient:        Patient
     room:           Room
+    step:           Step
   }
   type Step {
-    _id:            String
-    recordid:       String
+    _id:            ID
+    recordId:       String
     code:           String
     name:           String
     content:        String
@@ -110,12 +111,17 @@ const typeDefs = gql`
     # reset Data
     resetAll(confirm: String!): Boolean
 
+    # Doctor
+
+
     # Patient
     # addPatient(fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refby: String, medicalhistory: [String]): Patient
 
 
     # Record
-    # addRecord(recordnumber: Int!, no: Int!, cost: Int!, paid: Int!, createddate: Int!, treatment: String!): Record
+    addRecord(patientId: String!, recordNumber: Int!, no: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
+    updateRecord(_id: ID!, patientId: String!, recordNumber: Int!, no: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!, isEnabled: Boolean!): Record
+    removeRecord(_id: ID!): Record
   }
 `
 //   type Mutation {
@@ -162,22 +168,73 @@ const resolvers = {
     getSteps: (root, args, context, info) => Step.find({ isEnabled: true })
   },
 
-  // Patient: {
-  //   records (room) {
-  //     return Record.find({ roomId: room._id, isEnabled: true })
-  //   }
-  // },
+  Doctor: {
+    records (doctor) {
+      return Record.find({ doctorId: doctor._id, isEnabled: true })
+    },
+    schedules (doctor) {
+      return Schedule.find({ doctorId: doctor._id, isEnabled: true })
+    }
+  },
+
+  Patient: {
+    records (patient) {
+      return Record.find({ patientId: patient._id, isEnabled: true })
+    },
+    schedules (patient) {
+      return Schedule.find({ patientId: patient._id, isEnabled: true })
+    }
+  },
+
+  Record: {
+    steps (record) {
+      return Step.find({ recordId: record._id, isEnabled: true })
+    },
+    patient (record) {
+      return Patient.findById(record.patientId)
+    }
+  },
+
+  Room: {
+    schedules (room) {
+      return Schedule.find({ roomId: room._id, isEnabled: true })
+    }
+  },
+
+  Schedule: {
+    doctor (schedule) {
+      return Doctor.findById(schedule.doctorId)
+    },
+    patient (schedule) {
+      return Patient.findById(schedule.patientId)
+    },
+    room (schedule) {
+      return Room.findById(schedule.roomId)
+    },
+    step (schedule) {
+      return Step.findById(schedule.stepId)
+    }
+  },
+
+  Step: {
+    record (step) {
+      return Record.findById(step.recordId)
+    },
+    schedules (step) {
+      return Schedule.find({ stepId: step._id, isEnabled: true })
+    }
+  },
 
   Mutation: {
     // RESET DATA
     resetAll: (root, args) => {
       if (args.confirm === 'yes') {
-        Doctor.remove({}).exec()
-        Patient.remove({}).exec()
-        Record.remove({}).exec()
-        Room.remove({}).exec()
-        Schedule.remove({}).exec()
-        Step.remove({}).exec()
+        Doctor.deleteMany({}).exec()
+        Patient.deleteMany({}).exec()
+        Record.deleteMany({}).exec()
+        Room.deleteMany({}).exec()
+        Schedule.deleteMany({}).exec()
+        Step.deleteMany({}).exec()
         return true
       }
       return false
@@ -192,35 +249,17 @@ const resolvers = {
     // },
 
     // RECORD
-    // addRecord: (root, args) => {
-    //   args._id = mongoose.Types.ObjectId()
-    //   // generate teeth array
-    //   args.isEnabled = true
-    //   let newRecord = new Record(args)
-    //   return newRecord.save()
-    // }
+    addRecord: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      // generate teeth array
+      args.isEnabled = true
+      let newRecord = new Record(args)
+      return newRecord.save()
+    },
+    updateRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, args),
+    removeRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, { isEnabled: false })
   }
-  // Room: {
-  //   seats (room) {
-  //     return Seat.find({roomId: room._id, isEnabled: true})
-  //   }
-  // },
-  // Seat: {
-  //   room (seat) {
-  //     return Room.findById(seat.roomId)
-  //   }
-  // },
-  // Schedule: {
-  //   user (schedule) {
-  //     return User.findById(schedule.userId)
-  //   },
-  //   room (schedule) {
-  //     return Room.findById(schedule.roomId)
-  //   },
-  //   seat (schedule) {
-  //     return Seat.findById(schedule.seatId)
-  //   }
-  // },
+
   // Mutation: {
   //   // AUTH
   //   login: async (root, args, {session, req}) => {

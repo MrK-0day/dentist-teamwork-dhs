@@ -3,9 +3,10 @@ const express = require('express')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
 const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 
-const MONGO_URL = process.env['MONGO_URL'] || 'DbAdmin:a123456@ds139884.mlab.com:39884/dentist'
+const MONGO_URL = process.env['MONGO_URL'] || 'localhost:27017'
+// const MONGO_URL = process.env['MONGO_URL'] || 'DbAdmin:a123456@ds139884.mlab.com:39884/dentist'
 const PORT = process.env['PORT'] || 4000
 
 mongoose.set('debug', true)

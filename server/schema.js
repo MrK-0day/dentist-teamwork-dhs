@@ -2,7 +2,7 @@ const { gql, PubSub, ApolloError } = require('apollo-server-express')
 // const pubsub = new PubSub()
 // const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
-// const _ = require('lodash')
+const _ = require('lodash')
 
 // models
 const Doctor = require('./models/Doctor')
@@ -112,41 +112,28 @@ const typeDefs = gql`
     resetAll(confirm: String!): Boolean
 
     # Doctor
-
+    addDoctor(fullname: String!, specialize: String, phone: String!): Doctor
+    updateDoctor(_id: ID!, fullname: String!, specialize: String, phone: String!): Doctor
+    removeDoctor(_id: ID!): Doctor
 
     # Patient
-    # addPatient(fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refby: String, medicalhistory: [String]): Patient
-
+    addPatient(fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refby: String, medicalhistory: [String]): Patient
+    updatePatient(_id: ID!, fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refBy: String, medicalHistory: [String]): Patient
+    removePatient(_id: ID!): Patient
 
     # Record
     addRecord(patientId: String!, recordNumber: Int!, no: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
-    updateRecord(_id: ID!, patientId: String!, recordNumber: Int!, no: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!, isEnabled: Boolean!): Record
+    updateRecord(_id: ID!, patientId: String!, recordNumber: Int!, no: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
     removeRecord(_id: ID!): Record
+
+    # Room
+
+    # Schedule
+
+    # Step
+
   }
 `
-//   type Mutation {
-//     # Seat
-//     addSeat(code: String!, x: Int!, y: Int!, state: Int, isEnabled: Boolean!, roomId: String!): Seat
-//     updateSeat(_id: ID!, code: String, x: Int, y: Int, state: Int, isEnabled: Boolean, roomId: String): Seat
-//     removeSeat(_id: ID!): Seat
-//     # Room
-//     addRoom(code: String!, name: String, width: Int!, length: Int!, isEnabled: Boolean!): Room
-//     updateRoom(_id: ID!, code: String, name: String, width: Int, length: Int, isEnabled: Boolean): Room
-//     removeRoom(_id: ID!): Room
-//     # User
-//     addUser(username: String!, password: String, imageUrl: String, firstname: String, lastname: String, isEnabled: Boolean!): User
-//     updateUser(_id: ID!, username: String!, password: String, imageUrl: String, firstname: String, lastname: String, isEnabled: Boolean!): User
-//     removeUser(_id: ID!): User
-//     # Schedule
-//     addSchedule(seatId: String!, userId: String!, timestamp: Int!): Schedule
-//     updateSchedule(_id: ID!, roomId: String, seatId: String, userId: String, timestamp: Int): Schedule
-//     deleteSchedule(_id: ID!, seatId: String!): Schedule
-//     # Auth
-//     login(username: String!, password: String!): LoginResponse!
-//     # reset Data
-//     resetAll(confirm: String!): Boolean
-//   }
-
 //   type Subscription {
 //     scheduleUpdate: Schedule
 //   }
@@ -240,24 +227,48 @@ const resolvers = {
       return false
     },
 
+    // DOCTOR
+    addDoctor: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      args.isEnabled = true
+      let newDoctor = new Doctor(args)
+      return newDoctor.save()
+    },
+    updateDoctor: (root, args) => Doctor.findOneAndUpdate({ _id: args._id }, args),
+    removeDoctor: (root, args) => Doctor.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
+
     // PATIENT
-    // addPatient: (root, args) => {
-    //   args._id = mongoose.Types.ObjectId()
-    //   args.isEnabled = true
-    //   let newPatient = new Patient(args)
-    //   return newPatient.save()
-    // },
+    addPatient: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      args.isEnabled = true
+      let newPatient = new Patient(args)
+      return newPatient.save()
+    },
+    updatePatient: (root, args) => Patient.findOneAndUpdate({ _id: args._id }, args),
+    removePatient: (root, args) => Patient.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // RECORD
     addRecord: (root, args) => {
       args._id = mongoose.Types.ObjectId()
       // generate teeth array
+      let cycleCount = _.fill(Array(32), {})
+      let teethArr = []
+      cycleCount.map(function (tooth, index) { teethArr.push({ code: index + 1, state: 0, note: '' }) })
+
+      args.teeth = teethArr
       args.isEnabled = true
       let newRecord = new Record(args)
       return newRecord.save()
     },
     updateRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, args),
     removeRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, { isEnabled: false })
+
+    // ROOM
+
+    // SCHEDULE
+
+    // STEP
+
   }
 
   // Mutation: {

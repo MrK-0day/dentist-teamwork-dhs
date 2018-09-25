@@ -1,7 +1,9 @@
 import * as React from 'react'
-import { Row } from 'antd'
+import { connect } from 'react-redux'
+import { Row, Divider } from 'antd'
 
 import { BoxCard } from '../card/BoxCard'
+import { TableDashboard } from '../table/TableDashboard'
 
 const _ListBoxCard = [
   {
@@ -22,14 +24,24 @@ const _ListBoxCard = [
   }
 ]
 
-export const ContentDashboard = ({ props } : { props: any }) => {
-  return (
-    <div className='animated fadeIn'>
-      <Row>
-        {_ListBoxCard.map((value: any, index: number) => {
-          return <BoxCard key={index} title={value.title} count={value.count} />
-        })}
-      </Row>
-    </div>
-  )
+class ContentDashboard extends React.Component<any, any> {
+  render () {
+    return (
+      <div className='animated fadeIn'>
+        <Row>
+          {_ListBoxCard.map((value: any, index: number) => {
+            return <BoxCard key={index} title={value.title} count={value.count} />
+          })}
+        </Row>
+        <Divider />
+        <TableDashboard props={this.props} />
+      </div>
+    )
+  }
 }
+
+const mapState = (state: any) => state.Dashboard
+
+const mapDispatch = (dispatch: any) => dispatch.Dashboard
+
+export default connect(mapState, mapDispatch)(ContentDashboard)

@@ -1,63 +1,20 @@
 import * as React from 'react'
-import { Table, Button } from 'antd'
+import { connect } from 'react-redux'
 
-const columns = [
-  {
-    title:'Name',
-    key:'fullname',
-    dataIndex:'fullname'
-  },
-  {
-    title:'Gender',
-    key:'gender',
-    dataIndex:'gender'
-  },
-  {
-    title:'Birthdate',
-    key:'dob',
-    dataIndex:'dob'
-  },
-  {
-    title:'Job',
-    key:'career',
-    dataIndex:'carrer'
-  },
-  {
-    title:'Address',
-    key:'address',
-    dataIndex:'address'
-  },
-  {
-    title:'Phone',
-    key:'phone',
-    dataIndex:'phone'
-  },
-  {
-    title:'Nationality',
-    key:'nationality',
-    dataIndex:'nationality'
-  },
-  {
-    title:'E-mail',
-    key:'email',
-    dataIndex:'email'
-  },
-  {
-    title:'Referer',
-    key:'refby',
-    dataIndex:'refby'
-  },
-  {
-    title:'Actions',
-    key:'actions',
-    render: () => (
-      <span><Button>Edit</Button><Button>Delete</Button></span>
+import { TablePatient } from '../table/TablePatient'
+
+class ContentPatient extends React.Component<any, any> {
+  render () {
+    return (
+      <div>
+        <TablePatient props={this.props} />
+      </div>
     )
   }
-]
-
-export const ContentPatient = ({ props } : { props: any }) => {
-  return (
-    <Table columns={columns}/>
-  )
 }
+
+const mapState = (state: any) => state.Patient
+
+const mapDispatch = (dispatch: any) => dispatch.Patient
+
+export default connect(mapState, mapDispatch)(ContentPatient)

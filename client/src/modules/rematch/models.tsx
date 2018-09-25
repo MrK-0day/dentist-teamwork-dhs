@@ -32,3 +32,33 @@ export const Home = {
     }
   }
 }
+
+export const Dashboard = {
+  state: {},
+  reducers: {}
+}
+
+export const Patient = {
+  state: {},
+  reducers: {}
+}
+
+export const MedialRecord = {
+  state: {
+    visible: false
+  },
+  reducers: {
+    onOpenModalAdd (state: any) {
+      return {
+        ...state,
+        visible: true
+      }
+    },
+    onCloseModalAdd (state: any) {
+      return {
+        ...state,
+        visible: false
+      }
+    }
+  }
+}

@@ -5,12 +5,14 @@ const columns = [
   {
     title:'Name',
     key:'fullname',
-    dataIndex:'fullname'
+    dataIndex:'fullname',
+    width: 300
   },
   {
     title:'Gender',
     key:'gender',
-    dataIndex:'gender'
+    dataIndex:'gender',
+    width: 100
   },
   {
     title:'Birthdate',
@@ -57,5 +59,5 @@ const columns = [
 ]
 
 export const TablePatient = ({ props }: { props: any }) => {
-  return <Table columns={columns} />
+  return <Table bordered={true} columns={columns} />
 }

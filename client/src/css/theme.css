@@ -26,4 +26,10 @@ body {
     text-align: center;
     box-shadow: 0px 0px 10px -2px #000000;
   }
+  .patient-table-header {
+    padding-bottom: 10px;
+  }
+  .patient-header-btn {
+    float: right;
+  }
 }

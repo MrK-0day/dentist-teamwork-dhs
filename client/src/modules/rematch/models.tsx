@@ -39,8 +39,23 @@ export const Dashboard = {
 }
 
 export const Patient = {
-  state: {},
-  reducers: {}
+  state: {
+    addModal: false
+  },
+  reducers: {
+    openAddModal (state: any) {
+      return {
+        ...state,
+        addModal: true
+      }
+    },
+    closeAddModal (state: any) {
+      return {
+        ...state,
+        addModal: false
+      }
+    }
+  }
 }
 
 export const MedialRecord = {

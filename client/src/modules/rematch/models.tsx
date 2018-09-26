@@ -91,6 +91,20 @@ export const Patient = {
         [key]: value
       }
     },
+    initData (state: any) {
+      return{
+        ...state,
+        fullname: '',
+        gender: '',
+        dob: 0,
+        career: '',
+        address: '',
+        phone: '',
+        nationality: '',
+        email: '',
+        refby: ''
+      }
+    },
     addPatient (state: any){
       // let newPatientData = [...state.patientData]
       // newPatientData.push(payload)
@@ -101,7 +115,15 @@ export const Patient = {
       console.log(state)
       return{
         ...state,
-        a: 'abc'
+        fullname: '',
+        gender: '',
+        dob: 0,
+        career: '',
+        address: '',
+        phone: '',
+        nationality: '',
+        email: '',
+        refby: ''
       }
     }
 

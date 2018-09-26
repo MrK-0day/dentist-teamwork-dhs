@@ -103,7 +103,7 @@ class AddPatientForm extends React.Component<any, any> {
                 <Col span={12}><FormItem {...formItemLayout} style={{width: 300,  alignSelf:'center'}}>{jobSelector}</FormItem></Col>
             </Row>
             <FormItem {...formItemLayout} label='Referer'>
-                <Input id='refby' onChange={this.handleChange.bind(this)} value={this.props.refby}/>
+                <Input id='refBy' onChange={this.handleChange.bind(this)} value={this.props.refBy}/>
             </FormItem>
             <Button onClick={this.handleSubmit.bind(this)} type='primary'>Submit</Button>
         </Form>

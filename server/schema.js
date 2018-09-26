@@ -1,4 +1,4 @@
-const { gql, PubSub, ApolloError } = require('apollo-server-express')
+const { gql } = require('apollo-server-express')
 // const pubsub = new PubSub()
 // const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
@@ -127,10 +127,19 @@ const typeDefs = gql`
     removeRecord(_id: ID!): Record
 
     # Room
+    addRoom(code: String!, name: String!): Room
+    updateRoom(_id: ID!, code: String!, name: String!): Room
+    removeRoom(_id: ID!): Room
 
     # Schedule
+    addSchedule(timestamp: Int!, doctorId: String!, stepId: String!, patientId: String!, roomId: String!, content: String): Schedule
+    updateSchedule(_id: ID!, timestamp: Int!, doctorId: String!, stepId: String!, patientId: String!, roomId: String!, content: String): Schedule
+    removeSchedule(_id: ID!): Schedule
 
     # Step
+    addStep(recordId: String!, code: String!, name: String!, content: String): Step
+    updateStep(_id: ID!, recordId: String!, code: String!, name: String!, content: String, state: Int!): Step
+    removeStep(_id: ID!): Step
 
   }
 `
@@ -261,13 +270,38 @@ const resolvers = {
       return newRecord.save()
     },
     updateRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, args),
-    removeRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, { isEnabled: false })
+    removeRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // ROOM
+    addRoom: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      args.isEnabled = true
+      let newRoom = new Room(args)
+      return newRoom.save()
+    },
+    updateRoom: (root, args) => Step.findOneAndUpdate({ _id: args._id }, args),
+    removeRoom: (root, args) => Step.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // SCHEDULE
+    addSchedule: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      args.isEnabled = true
+      let newSchedule = new Schedule(args)
+      return newSchedule.save()
+    },
+    updateSchedule: (root, args) => Schedule.findOneAndUpdate({ _id: args._id }, args),
+    removeSchedule: (root, args) => Schedule.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // STEP
+    addStep: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      args.state = 0
+      args.isEnabled = true
+      let newStep = new Step(args)
+      return newStep.save()
+    },
+    updateStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, args),
+    removeStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, { isEnabled: false })
 
   }
 
@@ -293,32 +327,7 @@ const resolvers = {
   //     // }
   //     return { token: token }
   //   },
-  //   // SEAT
-  //   addSeat: (root, args) => {
-  //     args._id = mongoose.Types.ObjectId()
-  //     let newSeat = new Seat(args)
-  //     return newSeat.save()
-  //   },
-  //   updateSeat: (root, args) => Seat.findOneAndUpdate({_id: args._id}, args),
-  //   removeSeat: (root, args) => Seat.findOneAndUpdate(args, {$set: {isEnabled: false}}),
-  //   // ROOM
-  //   addRoom: (root, args) => {
-  //     console.log(args)
-  //     args._id = mongoose.Types.ObjectId()
-  //     let newRoom = new Room(args)
-  //     return newRoom.save()
-  //   },
-  //   updateRoom: (root, args) => Room.findOneAndUpdate({_id: args._id}, args),
-  //   removeRoom: (root, args) => Room.findOneAndUpdate(args, {$set: {isEnabled: false}}),
-  //   // USER
-  //   addUser: (root, args) => {
-  //     console.log(args)
-  //     args._id = mongoose.Types.ObjectId()
-  //     let newUser = new User(args)
-  //     return newUser.save()
-  //   },
-  //   updateUser: (root, args) => User.findOneAndUpdate({_id: args._id}, args),
-  //   removeUser: (root, args) => User.findOneAndUpdate(args, {$set: {isEnabled: false}}),
+  //
   //   // SCHEDULE
   //   addSchedule: (root, args) => {
   //     async function getRoom () {

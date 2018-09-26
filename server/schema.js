@@ -279,8 +279,8 @@ const resolvers = {
       let newRoom = new Room(args)
       return newRoom.save()
     },
-    updateRoom: (root, args) => Step.findOneAndUpdate({ _id: args._id }, args),
-    removeRoom: (root, args) => Step.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
+    updateRoom: (root, args) => Room.findOneAndUpdate({ _id: args._id }, args),
+    removeRoom: (root, args) => Room.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // SCHEDULE
     addSchedule: (root, args) => {

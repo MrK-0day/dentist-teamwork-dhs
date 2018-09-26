@@ -54,7 +54,16 @@ export const Patient = {
         email: 'nva@gmai.com',
         refby: 'Bill Gates',
       }
-    ]
+    ],
+    fullname: '',
+    gender: '',
+    dob: '',
+    career: '',
+    address: '',
+    phone: '',
+    nationality: '',
+    email: '',
+    refby: ''
   },
   reducers: {
     openAddModal (state: any) {
@@ -74,7 +83,30 @@ export const Patient = {
         ...state,
         genderRadio: payload
       }
+    },
+    initNewPatientData (state: any) {
+      return {
+        ...state,
+        newPatientData: {
+          fullname: '',
+          gender: '',
+          dob: '',
+          career: '',
+          address: '',
+          phone: '',
+          nationality: '',
+          email: '',
+          refby: ''
+        }
+      }
+    },
+    setState (state: any, key: any, value: any) {
+      return {
+        ...state,
+        [key]: value
+      }
     }
+
   }
 }
 

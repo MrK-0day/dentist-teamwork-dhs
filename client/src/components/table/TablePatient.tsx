@@ -22,7 +22,7 @@ const columns = [
   {
     title:'Job',
     key:'career',
-    dataIndex:'carrer'
+    dataIndex:'career'
   },
   {
     title:'Address',
@@ -52,8 +52,9 @@ const columns = [
   {
     title:'Actions',
     key:'actions',
+    width: 170,
     render: () => (
-      <span><Button>Edit</Button><Button>Delete</Button></span>
+      <span><Button type='primary'>Edit</Button><Button>Delete</Button></span>
     )
   }
 ]

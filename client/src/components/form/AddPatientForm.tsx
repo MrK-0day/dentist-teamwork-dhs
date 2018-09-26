@@ -25,8 +25,13 @@ class AddPatientForm extends React.Component<any, any> {
     handleRadioChange(e : any) {
         this.props.onGenderRadioChange(e.target.value)
     }
+    handleSubmit(){
+        console.log(this.props)
+    }
+    handleChange(e: any){
+        this.props.setState(e.target.id,e.target.value)
+    }
     render() {
-        console.log(moment())
         const prefixSelector = <Select defaultValue="+84" >
         {phone_prefixes.map((value: any, index: number) => {
             return <Option key={index}>{value.prefix}</Option>
@@ -59,9 +64,9 @@ class AddPatientForm extends React.Component<any, any> {
 
         const dateFormat = 'DD/MM/YYYY'
         return(
-        <Form layout='horizontal'>
+        <Form onSubmit={this.handleSubmit()} layout='horizontal'>
             <FormItem {...formItemLayout} label='Name'>
-                <Input id='fullname' placeholder='Full Name'/>
+                <Input id='fullname' placeholder='Full Name' onChange={this.handleChange.bind(this)} value={this.props.fullname}/>
             </FormItem>
             <FormItem {...formItemLayout} label='Gender'>
                 <RadioGroup onChange={this.handleRadioChange.bind(this)} value={this.props.genderRadio}>
@@ -74,23 +79,20 @@ class AddPatientForm extends React.Component<any, any> {
                 <DatePicker defaultValue={moment()} format={dateFormat} style={{width: '100%'}}/>
             </FormItem>
             <FormItem {...formItemLayout} label='E-mail'>
-                <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc'/>
+                <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} value={this.props.email}/>
             </FormItem>
             <FormItem {...formItemLayout} label='Phone'>
-                <Input placeholder='Valid phone number' addonBefore={prefixSelector} style={{ width: '100%' }} />
+                <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} addonBefore={prefixSelector} style={{ width: '100%' }} value={this.props.phone} />
             </FormItem>
             <FormItem {...formItemLayout} label='Address'>
-                <Input placeholder='Full address' />
+                <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' value={this.props.address}/>
             </FormItem>
             <Row>
                 <Col span={12}><FormItem {...formItemLayout} style={{width: 300, alignSelf:'center'}}>{countrySelector}</FormItem></Col>
                 <Col span={12}><FormItem {...formItemLayout} style={{width: 300,  alignSelf:'center'}}>{jobSelector}</FormItem></Col>
             </Row>
             <FormItem {...formItemLayout} label='Referer'>
-                <Input />
-            </FormItem>
-            <FormItem {...formItemLayout}>
-                <Checkbox>Register for Promotions and emails</Checkbox>
+                <Input id='refby' onChange={this.handleChange.bind(this)} value={this.props.refby}/>
             </FormItem>
         </Form>
         )

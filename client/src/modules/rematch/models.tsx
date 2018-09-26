@@ -40,7 +40,8 @@ export const Dashboard = {
 
 export const Patient = {
   state: {
-    addModal: false
+    addModal: false,
+    genderRadio: 1,
   },
   reducers: {
     openAddModal (state: any) {
@@ -53,6 +54,12 @@ export const Patient = {
       return {
         ...state,
         addModal: false
+      }
+    },
+    onGenderRadioChange (state: any, payload: any) {
+      return {
+        ...state,
+        genderRadio: payload
       }
     }
   }

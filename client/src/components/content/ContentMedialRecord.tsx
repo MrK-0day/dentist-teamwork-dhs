@@ -16,7 +16,7 @@ class ContentMedialRecord extends React.Component<any, any> {
               <Input.Search />
             </Col>
             <Col span={4}>
-              <Button block onClick={this.props.onOpenModalAdd.bind(this)} type='primary'>
+              <Button block onClick={this.props.onOpenModalAdd.bind(this)} icon="plus" type='primary'>
                 Add Medial Record
               </Button>
             </Col>

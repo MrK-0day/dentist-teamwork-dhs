@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { Form, Input, Select, Row, Col, Checkbox, Button, Radio } from 'antd'
+import { Form, Input, Select, Row, Col, Checkbox, Button, Radio, DatePicker } from 'antd'
 
 import { phone_prefixes, countries } from '../misc/regionData'
-import { stat } from 'fs'
+let moment = require('moment')
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -22,7 +22,11 @@ const formItemLayout = {
 };
 
 class AddPatientForm extends React.Component<any, any> {
+    handleRadioChange(e : any) {
+        this.props.onGenderRadioChange(e.target.value)
+    }
     render() {
+        console.log(moment())
         const prefixSelector = <Select defaultValue="+84" >
         {phone_prefixes.map((value: any, index: number) => {
             return <Option key={index}>{value.prefix}</Option>
@@ -45,19 +49,29 @@ class AddPatientForm extends React.Component<any, any> {
             <Option key={3}>
                 Government Emp.
             </Option>
+            <Option key={4}>
+                Student
+            </Option>
+            <Option key={5}>
+                Other
+            </Option>
         </Select>
 
+        const dateFormat = 'DD/MM/YYYY'
         return(
         <Form layout='horizontal'>
             <FormItem {...formItemLayout} label='Name'>
                 <Input id='fullname' placeholder='Full Name'/>
             </FormItem>
-            <FormItem label='Gender'>
-                <RadioGroup value={this.props.genderValue}>
+            <FormItem {...formItemLayout} label='Gender'>
+                <RadioGroup onChange={this.handleRadioChange.bind(this)} value={this.props.genderRadio}>
                     <Radio value={1}>Male</Radio>
                     <Radio value={2}>Female</Radio>
                     <Radio value={3}>Other</Radio>
                 </RadioGroup>
+            </FormItem>
+            <FormItem {...formItemLayout} label='Birthdate'>
+                <DatePicker defaultValue={moment()} format={dateFormat} style={{width: '100%'}}/>
             </FormItem>
             <FormItem {...formItemLayout} label='E-mail'>
                 <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc'/>
@@ -69,10 +83,10 @@ class AddPatientForm extends React.Component<any, any> {
                 <Input placeholder='Full address' />
             </FormItem>
             <Row>
-                <Col span={12}><FormItem {...formItemLayout}>{countrySelector}</FormItem></Col>
-                <Col span={12}><FormItem {...formItemLayout}>{jobSelector}</FormItem></Col>
+                <Col span={12}><FormItem {...formItemLayout} style={{width: 300, alignSelf:'center'}}>{countrySelector}</FormItem></Col>
+                <Col span={12}><FormItem {...formItemLayout} style={{width: 300,  alignSelf:'center'}}>{jobSelector}</FormItem></Col>
             </Row>
-            <FormItem {...formItemLayout} label='Referer (optional)'>
+            <FormItem {...formItemLayout} label='Referer'>
                 <Input />
             </FormItem>
             <FormItem {...formItemLayout}>

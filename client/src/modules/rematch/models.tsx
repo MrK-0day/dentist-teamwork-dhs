@@ -106,12 +106,23 @@ export const Patient = {
       }
     },
     addPatient (state: any){
-      // let newPatientData = [...state.patientData]
-      // newPatientData.push(payload)
-      // return {
-      //   ...state,
-      //   patientData: newPatientData
-      // }
+      let newPatientData = [...state.patientData]
+      let newPatient= {
+        name: state.fullname,
+        gender: state.gender,
+        dob: state.dob,
+        career: state.careeer,
+        address: state.address,
+        phone: state.phone,
+        nationality: state.nationality,
+        email: state.email,
+        refby: state.refby
+      }
+      newPatientData.push(newPatient)
+      return {
+        ...state,
+        patientData: newPatientData
+      }
       console.log(state)
       return{
         ...state,

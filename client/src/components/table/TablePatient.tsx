@@ -59,5 +59,5 @@ const columns = [
 ]
 
 export const TablePatient = ({ props }: { props: any }) => {
-  return <Table bordered={true} columns={columns} />
+  return <Table bordered={true} columns={columns} dataSource={props.patientData} />
 }

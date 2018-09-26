@@ -40,5 +40,5 @@ const columns = [
 ]
 
 export const TableMedicalRecord = ({ props }: { props: any }) => {
-  return <Table columns={columns} />
+  return <Table bordered={true} columns={columns} />
 }

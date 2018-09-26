@@ -42,6 +42,19 @@ export const Patient = {
   state: {
     addModal: false,
     genderRadio: 1,
+    patientData: [
+      {
+        fullname: 'Nguyen Van A',
+        gender: 'male',
+        dob: '12/12/2012',
+        career: 'abc',
+        address: '123 def',
+        phone: '0123456789',
+        nationality: 'Viet Nam',
+        email: 'nva@gmai.com',
+        refby: 'Bill Gates',
+      }
+    ]
   },
   reducers: {
     openAddModal (state: any) {

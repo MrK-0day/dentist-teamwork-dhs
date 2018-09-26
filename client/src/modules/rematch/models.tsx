@@ -41,12 +41,12 @@ export const Dashboard = {
 export const Patient = {
   state: {
     addModal: false,
-    genderRadio: 1,
+    genderRadio: "male",
     patientData: [
       {
         fullname: 'Nguyen Van A',
         gender: 'male',
-        dob: '12/12/2012',
+        dob: '12-12-2012',
         career: 'abc',
         address: '123 def',
         phone: '0123456789',
@@ -57,7 +57,7 @@ export const Patient = {
     ],
     fullname: '',
     gender: '',
-    dob: '',
+    dob: 0,
     career: '',
     address: '',
     phone: '',
@@ -81,29 +81,27 @@ export const Patient = {
     onGenderRadioChange (state: any, payload: any) {
       return {
         ...state,
-        genderRadio: payload
+        genderRadio: payload,
+        gender: payload
       }
     },
-    initNewPatientData (state: any) {
-      return {
-        ...state,
-        newPatientData: {
-          fullname: '',
-          gender: '',
-          dob: '',
-          career: '',
-          address: '',
-          phone: '',
-          nationality: '',
-          email: '',
-          refby: ''
-        }
-      }
-    },
-    setState (state: any, key: any, value: any) {
+    setMyState (state: any, key: any, value: any) {
       return {
         ...state,
         [key]: value
+      }
+    },
+    addPatient (state: any){
+      // let newPatientData = [...state.patientData]
+      // newPatientData.push(payload)
+      // return {
+      //   ...state,
+      //   patientData: newPatientData
+      // }
+      console.log(state)
+      return{
+        ...state,
+        a: 'abc'
       }
     }
 

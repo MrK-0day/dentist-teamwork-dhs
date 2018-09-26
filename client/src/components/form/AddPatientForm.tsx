@@ -21,6 +21,8 @@ const formItemLayout = {
     },
 };
 
+const jobLists = ['Student','Woker']
+
 class AddPatientForm extends React.Component<any, any> {
     handleRadioChange(e : any) {
         this.props.onGenderRadioChange(e.target.value)
@@ -29,7 +31,28 @@ class AddPatientForm extends React.Component<any, any> {
         console.log(this.props)
     }
     handleChange(e: any){
-        this.props.setState(e.target.id,e.target.value)
+        this.props.setMyState(e.target.id,e.target.value)
+    }
+    handleDateChange(date: any, dateString: string) {
+        let selected = dateString.split('-')
+      const selectedDate = moment().set({
+        'date': +selected[0],
+        'month': +selected[1] - 1,
+        'year': +selected[2],
+        'hour': 0,
+        'minute': 0,
+        'second': 0
+      }).unix()
+      console.log(selectedDate)
+      const converted = moment(selectedDate*1000).format(`DD-MM-YYYY`)
+      console.log(converted)
+      this.props.setMyState('dob',selectedDate)
+    }
+    handleCountrySelect(value: string){
+        this.props.setMyState('nationality',countries[Number(value)].name)
+    }
+    handleJobSelect(value:string){
+        this.props.setMyState('career',jobLists[Number(value)])
     }
     render() {
         const prefixSelector = <Select defaultValue="+84" >
@@ -38,45 +61,33 @@ class AddPatientForm extends React.Component<any, any> {
         })}
         </Select>
 
-        const countrySelector = <Select placeholder='Select country'>
+        const countrySelector = <Select onSelect={this.handleCountrySelect.bind(this)} placeholder='Select country'>
         {countries.map((value: any, index: any)=>{
             return <Option key={index}>{value.name}</Option>
         })}
         </Select>
 
-        const jobSelector = <Select placeholder='Choose your job'>
-            <Option key={1}>
-                Engineer
-            </Option>
-            <Option key={2}>
-                Doctor
-            </Option>
-            <Option key={3}>
-                Government Emp.
-            </Option>
-            <Option key={4}>
-                Student
-            </Option>
-            <Option key={5}>
-                Other
-            </Option>
+        const jobSelector = <Select onSelect={this.handleJobSelect.bind(this)}placeholder='Choose your job'>
+        {jobLists.map((value: any, index: any)=>{
+            return <Option key={index}>{value}</Option>
+        })}
         </Select>
 
-        const dateFormat = 'DD/MM/YYYY'
+        const dateFormat = 'DD-MM-YYYY'
         return(
-        <Form onSubmit={this.handleSubmit()} layout='horizontal'>
+        <Form layout='horizontal'>
             <FormItem {...formItemLayout} label='Name'>
                 <Input id='fullname' placeholder='Full Name' onChange={this.handleChange.bind(this)} value={this.props.fullname}/>
             </FormItem>
             <FormItem {...formItemLayout} label='Gender'>
                 <RadioGroup onChange={this.handleRadioChange.bind(this)} value={this.props.genderRadio}>
-                    <Radio value={1}>Male</Radio>
-                    <Radio value={2}>Female</Radio>
-                    <Radio value={3}>Other</Radio>
+                    <Radio value={'male'}>Male</Radio>
+                    <Radio value={'female'}>Female</Radio>
+                    <Radio value={'other'}>Other</Radio>
                 </RadioGroup>
             </FormItem>
             <FormItem {...formItemLayout} label='Birthdate'>
-                <DatePicker defaultValue={moment()} format={dateFormat} style={{width: '100%'}}/>
+                <DatePicker onChange={this.handleDateChange.bind(this)} defaultValue={moment()} format={dateFormat} style={{width: '100%'}}/>
             </FormItem>
             <FormItem {...formItemLayout} label='E-mail'>
                 <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} value={this.props.email}/>
@@ -94,6 +105,7 @@ class AddPatientForm extends React.Component<any, any> {
             <FormItem {...formItemLayout} label='Referer'>
                 <Input id='refby' onChange={this.handleChange.bind(this)} value={this.props.refby}/>
             </FormItem>
+            <Button onClick={this.handleSubmit.bind(this)} type='primary'>Submit</Button>
         </Form>
         )
     }

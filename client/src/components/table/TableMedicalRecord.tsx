@@ -3,37 +3,37 @@ import { Table } from 'antd'
 
 const columns = [
   {
-    title: 'Action',
+    title: 'Thao tác',
     key: 'action',
     dataIndex: 'action'
   },
   {
-    title: 'Patient',
+    title: 'Bệnh Nhân',
     key: 'patient',
     dataIndex: 'patient'
   },
   {
-    title: 'Record',
-    key: 'record',
-    dataIndex: 'record'
+    title: 'Số Lần Khám',
+    key: 'no',
+    dataIndex: 'no'
   },
   {
-    title: 'Code',
-    key: 'code',
-    dataIndex: 'code'
+    title: 'Mã Bệnh Án',
+    key: 'recordnumber',
+    dataIndex: 'recordnumber'
   },
   {
-    title: 'Step',
+    title: 'Giai Đoạn',
     key: 'step',
     dataIndex: 'step'
   },
   {
-    title: 'Cost',
+    title: 'Tổng Tiền',
     key: 'cost',
     dataIndex: 'cost'
   },
   {
-    title: 'Paid',
+    title: 'Đã Thanh Toán',
     key: 'paid',
     dataIndex: 'paid'
   },

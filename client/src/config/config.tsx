@@ -1,1 +1,1 @@
-export const GRAPH_QL_URL = 'qc2:8002/graphql'
+export const GRAPH_QL_URL = 'localhost:4000/graphql'

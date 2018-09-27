@@ -8,7 +8,7 @@ import { setContext } from 'apollo-link-context'
 
 import { GRAPH_QL_URL } from '../../config/config'
 
-export const Client = (token?: string): any => {
+export const Client = (token?: string) => {
   const httpLink = new HttpLink({
     uri: `http://${GRAPH_QL_URL}`
   })
@@ -32,8 +32,9 @@ export const Client = (token?: string): any => {
       return kind === 'OperationDefinition' && operation === 'subscription'
     }, wsLink, httpLink
   )
-  return new ApolloClient({
+  const cc = new ApolloClient({
     link: authLink.concat(link),
     cache: new InMemoryCache()
   })
+  return cc
 }

@@ -1,3 +1,6 @@
+import { Client } from '../apollo/apollo'
+import gql from 'graphql-tag'
+
 export const Home = {
   state: {
     isCollapsed: false,
@@ -143,9 +146,23 @@ export const Patient = {
 
 export const MedialRecord = {
   state: {
-    visible: false
+    visible: false,
+    visibletooth: false,
+    fullname: '',
+    date: '',
+    cost: 0,
+    paid: 0,
+    docter: '',
+    listdatafullname: ['Phát', 'Tuấn', 'Lộc'],
+    listtooth: []
   },
   reducers: {
+    setState (state: any, key: any, value: any) {
+      return {
+        ...state,
+        [key]: value
+      }
+    },
     onOpenModalAdd (state: any) {
       return {
         ...state,

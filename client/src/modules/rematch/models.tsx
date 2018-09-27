@@ -43,7 +43,7 @@ export const Dashboard = {
 
 export const Patient = {
   state: {
-    addModal: false,
+    targetModal: 'none',
     genderRadio: "male",
     patientData: [
       {
@@ -69,16 +69,16 @@ export const Patient = {
     refby: ''
   },
   reducers: {
-    openAddModal (state: any) {
+    openModal (state: any, target: String) {
       return {
         ...state,
-        addModal: true
+        targetModal: target
       }
     },
-    closeAddModal (state: any) {
+    closeModal (state: any) {
       return {
         ...state,
-        addModal: false
+        targetModal: 'none'
       }
     },
     onGenderRadioChange (state: any, payload: any) {

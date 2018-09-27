@@ -23,7 +23,7 @@ const formItemLayout = {
 
 const jobLists = ['Student','Woker']
 
-class AddPatientForm extends React.Component<any, any> {
+class PatientForm extends React.Component<any, any> {
   handleRadioChange(e : any) {
     this.props.onGenderRadioChange(e.target.value)
   }
@@ -115,4 +115,4 @@ const mapState = (state: any) => state.Patient
 
 const mapDispatch = (dispatch: any) => dispatch.Patient
 
-export default connect(mapState,mapDispatch)(AddPatientForm)
+export default connect(mapState,mapDispatch)(PatientForm)

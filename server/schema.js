@@ -1,18 +1,25 @@
-const { gql } = require('apollo-server-express')
+const { gql, ApolloError } = require('apollo-server-express')
 // const pubsub = new PubSub()
 // const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const _ = require('lodash')
 
 // models
+const Disease = require('./models/Disease')
 const Doctor = require('./models/Doctor')
 const Patient = require('./models/Patient')
 const Record = require('./models/Record')
 const Room = require('./models/Room')
 const Schedule = require('./models/Schedule')
 const Step = require('./models/Step')
+const Treatment = require('./models/Treatment')
 
 const typeDefs = gql`
+  type Disease {
+    _id:            ID
+    name:           String
+    isEnabled:      Boolean
+  }
   type Doctor {
     _id:            ID
     fullname:       String
@@ -91,25 +98,41 @@ const typeDefs = gql`
     record:         Record
     schedules:      [Schedule]
   }
+  type Treatment {
+    _id:            ID
+    diseaseId:      String
+    content:        String
+    isEnabled:      Boolean
+    disease:        Disease
+  }
 
   type Query {
-    doctor(_id: ID!):   Doctor
-    getDoctors:        [Doctor]
-    patient(_id: ID!):  Patient
-    getPatients:       [Patient]
-    record(_id: ID!):   Record
-    getRecords:        [Record]
-    room(_id: ID!):     Room
-    getRooms:          [Room]
-    schedule(_id: ID!): Schedule
-    getSchedules:      [Schedule]
-    step(_id: ID!):     Step
-    getSteps:          [Step]
+    disease(_id: ID!):    Disease
+    getDiseases:       [Disease]
+    doctor(_id: ID!):     Doctor
+    getDoctors:          [Doctor]
+    patient(_id: ID!):    Patient
+    getPatients:         [Patient]
+    record(_id: ID!):     Record
+    getRecords:          [Record]
+    room(_id: ID!):       Room
+    getRooms:            [Room]
+    schedule(_id: ID!):   Schedule
+    getSchedules:        [Schedule]
+    step(_id: ID!):       Step
+    getSteps:            [Step]
+    treatment(_id: ID!):  Treatment
+    getTreatments:     [Treatment]
   }
 
   type Mutation {
     # reset Data
     resetAll(confirm: String!): Boolean
+
+    #Disease
+    addDisease(name: String!): Disease
+    updateDisease(_id: ID!, name: String!): Disease
+    removeDisease(_id: ID!): Disease
 
     # Doctor
     addDoctor(fullname: String!, specialize: String, phone: String!): Doctor
@@ -122,8 +145,8 @@ const typeDefs = gql`
     removePatient(_id: ID!): Patient
 
     # Record
-    addRecord(patientId: String!, recordNumber: Int!, no: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
-    updateRecord(_id: ID!, patientId: String!, recordNumber: Int!, no: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
+    addRecord(patientId: String!, recordNumber: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
+    updateRecord(_id: ID!, patientId: String!, recordNumber: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
     removeRecord(_id: ID!): Record
 
     # Room
@@ -141,27 +164,31 @@ const typeDefs = gql`
     updateStep(_id: ID!, recordId: String!, code: String!, name: String!, content: String, state: Int!): Step
     removeStep(_id: ID!): Step
 
+    #Treatment
+    addTreatment(diseaseId: String!, content: String!): Treatment
+    updateTreatment(_id: ID!, diseaseId: String!, content: String!): Treatment
+    removeTreatment(_id: ID!): Treatment
   }
 `
-//   type Subscription {
-//     scheduleUpdate: Schedule
-//   }
-// `
 
 const resolvers = {
   Query: {
-    doctor: (root, args, context, info) => Doctor.findById(args._id),
-    getDoctors: (root, args, context, info) => Doctor.find({ isEnabled: true }),
-    patient: (root, args, context, info) => Patient.findById(args._id),
-    getPatients: (root, args, context, info) => Patient.find({ isEnabled: true }),
-    record: (root, args, context, info) => Record.findById(args._id),
-    getRecords: (root, args, context, info) => Record.find({ isEnabled: true }),
-    room: (root, args, context, info) => Room.findById(args._id),
-    getRooms: (root, args, context, info) => Room.find({ isEnabled: true }),
-    schedule: (root, args, context, info) => Schedule.findById(args._id),
-    getSchedules: (root, args, context, info) => Schedule.find({ isEnabled: true }),
-    step: (root, args, context, info) => Step.findById(args._id),
-    getSteps: (root, args, context, info) => Step.find({ isEnabled: true })
+    disease:        (root, args, context, info) => Disease.findById(args._id),
+    getDiseases:    (root, args, context, info) => Disease.find({ isEnabled: true }),
+    doctor:         (root, args, context, info) => Doctor.findById(args._id),
+    getDoctors:     (root, args, context, info) => Doctor.find({ isEnabled: true }),
+    patient:        (root, args, context, info) => Patient.findById(args._id),
+    getPatients:    (root, args, context, info) => Patient.find({ isEnabled: true }),
+    record:         (root, args, context, info) => Record.findById(args._id),
+    getRecords:     (root, args, context, info) => Record.find({ isEnabled: true }),
+    room:           (root, args, context, info) => Room.findById(args._id),
+    getRooms:       (root, args, context, info) => Room.find({ isEnabled: true }),
+    schedule:       (root, args, context, info) => Schedule.findById(args._id),
+    getSchedules:   (root, args, context, info) => Schedule.find({ isEnabled: true }),
+    step:           (root, args, context, info) => Step.findById(args._id),
+    getSteps:       (root, args, context, info) => Step.find({ isEnabled: true }),
+    treatment:      (root, args, context, info) => Treatment.findById(args._id),
+    getTreatments:  (root, args, context, info) => Treatment.find({ isEnabled: true })
   },
 
   Doctor: {
@@ -221,6 +248,12 @@ const resolvers = {
     }
   },
 
+  Treatment: {
+    disease (treatment) {
+      return Disease.findById(treatment.diseaseId)
+    }
+  },
+
   Mutation: {
     // RESET DATA
     resetAll: (root, args) => {
@@ -235,6 +268,16 @@ const resolvers = {
       }
       return false
     },
+
+    // DISEASE
+    addDisease: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      args.isEnabled = true
+      let newDisease = new Disease(args)
+      return newDisease.save()
+    },
+    updateDisease: (root, args) => Disease.findOneAndUpdate({ _id: args._id }, args),
+    removeDisease: (root, args) => Disease.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // DOCTOR
     addDoctor: (root, args) => {
@@ -258,16 +301,24 @@ const resolvers = {
 
     // RECORD
     addRecord: (root, args) => {
-      args._id = mongoose.Types.ObjectId()
-      // generate teeth array
-      let cycleCount = _.fill(Array(32), {})
-      let teethArr = []
-      cycleCount.map(function (tooth, index) { teethArr.push({ code: index + 1, state: 0, note: '' }) })
+      async function validateData () {
+        console.log(args.patientId)
+        const count = await Patient.countDocuments(args.patient)
+        if (count === 0) throw new ApolloError('Patient not exist', '400', args)
 
-      args.teeth = teethArr
-      args.isEnabled = true
-      let newRecord = new Record(args)
-      return newRecord.save()
+        args._id = mongoose.Types.ObjectId()
+        // generate teeth array
+        let cycleCount = _.fill(Array(32), {})
+        let teethArr = []
+        cycleCount.map((tooth, index) => teethArr.push({ code: index + 1, state: 0, note: '' }))
+
+        args.no = 0
+        args.teeth = teethArr
+        args.isEnabled = true
+        let newRecord = new Record(args)
+        return newRecord.save()
+      }
+      return validateData()
     },
     updateRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, args),
     removeRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
@@ -301,61 +352,18 @@ const resolvers = {
       return newStep.save()
     },
     updateStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, args),
-    removeStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, { isEnabled: false })
+    removeStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
+    // TREATMENT
+    addTreatment: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      args.isEnabled = true
+      let newTreatment = new Treatment(args)
+      return newTreatment.save()
+    },
+    updateTreatment: (root, args) => Treatment.findOneAndUpdate({ _id: args._id }, args),
+    removeTreatment: (root, args) => Treatment.findOneAndUpdate({ _id: args._id }, { isEnabled: false })
   }
-
-  // Mutation: {
-  //   // AUTH
-  //   login: async (root, args, {session, req}) => {
-  //     console.log(args)
-  //     const user = await User.findOne({ 'username': args.username })
-  //     console.log(user)
-  //     if (!user) {
-  //       return {errors: 'Wrong username or password'}
-  //     }
-  //     // const valid = await bcrypt.compare(password, user.password)
-  //     console.log(args.password)
-  //     if (user.password !== args.password) {
-  //       return {errors: 'Wrong username or password'}
-  //     }
-  //     var token = jwt.sign({
-  //       sub: user
-  //     }, 'digihcs')
-  //     // if (req.sessionID) {
-  //     //   await redis.lpush(`userSids:${user._id}`, req.sessionID)
-  //     // }
-  //     return { token: token }
-  //   },
-  //
-  //   // SCHEDULE
-  //   addSchedule: (root, args) => {
-  //     async function getRoom () {
-  //       const count = await Schedule.countDocuments(args).exec()
-  //       if (count) throw new ApolloError('Duplicate schedule', '400', args)
-  //       const seat = await Seat.findById(args.seatId).exec()
-  //       args._id = mongoose.Types.ObjectId()
-  //       args.roomId = seat.roomId
-  //       let newSchedule = new Schedule(args)
-  //       pubsub.publish(SCHEDULE_UPDATE, {scheduleUpdate: args})
-  //       return newSchedule.save()
-  //     }
-  //     return getRoom()
-  //   },
-  //   updateSchedule: (root, args) => {
-  //     pubsub.publish(SCHEDULE_UPDATE, {scheduleUpdate: args})
-  //     return Schedule.findOneAndUpdate({_id: args._id}, args)
-  //   },
-  //   deleteSchedule: (root, args) => {
-  //     pubsub.publish(SCHEDULE_UPDATE, {scheduleUpdate: args})
-  //     return Schedule.deleteOne(args)
-  //   }
-  // },
-  // Subscription: {
-  //   scheduleUpdate: {
-  //     subscribe: () => pubsub.asyncIterator([SCHEDULE_UPDATE])
-  //   }
-  // }
 }
 
 module.exports = { typeDefs, resolvers }

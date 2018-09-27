@@ -23,7 +23,7 @@ const _ListMenuItem = [
   },
   {
     key: 'quanlylichkham',
-    text: 'Quản Lý Lịch Khám',
+    text: 'Quản Lý Lịch Hẹn',
     icon: 'calendar'
   },
   {

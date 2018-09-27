@@ -1,3 +1,6 @@
+import { Client } from '../apollo/apollo'
+import gql from 'graphql-tag'
+
 export const Home = {
   state: {
     isCollapsed: false,
@@ -91,17 +94,50 @@ export const Patient = {
         [key]: value
       }
     },
+    initData (state: any) {
+      return{
+        ...state,
+        fullname: '',
+        gender: '',
+        dob: 0,
+        career: '',
+        address: '',
+        phone: '',
+        nationality: '',
+        email: '',
+        refby: ''
+      }
+    },
     addPatient (state: any){
-      // let newPatientData = [...state.patientData]
-      // newPatientData.push(payload)
-      // return {
-      //   ...state,
-      //   patientData: newPatientData
-      // }
+      let newPatientData = [...state.patientData]
+      let newPatient= {
+        name: state.fullname,
+        gender: state.gender,
+        dob: state.dob,
+        career: state.careeer,
+        address: state.address,
+        phone: state.phone,
+        nationality: state.nationality,
+        email: state.email,
+        refby: state.refby
+      }
+      newPatientData.push(newPatient)
+      return {
+        ...state,
+        patientData: newPatientData
+      }
       console.log(state)
       return{
         ...state,
-        a: 'abc'
+        fullname: '',
+        gender: '',
+        dob: 0,
+        career: '',
+        address: '',
+        phone: '',
+        nationality: '',
+        email: '',
+        refby: ''
       }
     }
 
@@ -110,9 +146,23 @@ export const Patient = {
 
 export const MedialRecord = {
   state: {
-    visible: false
+    visible: false,
+    visibletooth: false,
+    fullname: '',
+    date: '',
+    cost: 0,
+    paid: 0,
+    docter: '',
+    listdatafullname: ['Phát', 'Tuấn', 'Lộc'],
+    listtooth: []
   },
   reducers: {
+    setState (state: any, key: any, value: any) {
+      return {
+        ...state,
+        [key]: value
+      }
+    },
     onOpenModalAdd (state: any) {
       return {
         ...state,

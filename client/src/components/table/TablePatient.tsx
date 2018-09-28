@@ -1,16 +1,20 @@
 import * as React from 'react'
-import { Table, Button, Modal } from 'antd'
+import { Table, Button, Popconfirm, message } from 'antd'
 
 
 
 export const TablePatient = ({ props }: { props: any }) => {
-  function handleClick(event: any) {
+  function handleDelete(event: any) {
     console.log(props)
     console.log(event.target)
-    if(event.target.name=='delete') {
-      props.asyncDeletePatient(event.target.value)
-      props.asyncInitData()
-    }
+    props.asyncDeletePatient(event.target.value)
+    props.asyncInitData()
+    message.success('Deleted')
+  }
+  function handleEdit(event: any) {
+    console.log(event.target)
+    props.asyncDeletePatient(event.target.value)
+    props.asyncInitData()
   }
   const columns = [
     {
@@ -65,7 +69,10 @@ export const TablePatient = ({ props }: { props: any }) => {
       key:'actions',
       width: 170,
       render: (text: any, row: any) => (
-        <span><Button name='edit' value={row.id} type='primary' onClick={handleClick}>Edit</Button><Button name='delete' value={row.id} onClick={handleClick}>Delete</Button></span>
+        <span>
+          <Button name='edit' value={row.id} type='primary' onClick={handleEdit}>Edit</Button>
+          <Button name='delete' value={row.id} onClick={handleDelete}>Delete</Button>
+        </span>
       )
     }
   ]

@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Form, Input, Select, Row, Col, Checkbox, Button, Radio, DatePicker } from 'antd'
 
 import { phone_prefixes, countries } from '../misc/regionData'
+import { DateFormat } from '../misc/const'
 let moment = require('moment')
 
 const FormItem = Form.Item
@@ -73,8 +74,7 @@ class PatientForm extends React.Component<any, any> {
     })}
     </Select>
 
-    const dateFormat = 'DD-MM-YYYY'
-    return(
+    const AddForm = (
       <Form layout='horizontal'>
         <FormItem {...formItemLayout} label='Name'>
           <Input id='fullname' placeholder='Full Name' onChange={this.handleChange.bind(this)} value={this.props.fullname}/>
@@ -87,7 +87,7 @@ class PatientForm extends React.Component<any, any> {
           </RadioGroup>
         </FormItem>
         <FormItem {...formItemLayout} label='Birthdate'>
-          <DatePicker onChange={this.handleDateChange.bind(this)} defaultValue={moment()} format={dateFormat} style={{width: '100%'}}/>
+          <DatePicker onChange={this.handleDateChange.bind(this)} defaultValue={moment()} format={DateFormat} style={{width: '100%'}}/>
         </FormItem>
         <FormItem {...formItemLayout} label='E-mail'>
           <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} value={this.props.email}/>
@@ -108,6 +108,51 @@ class PatientForm extends React.Component<any, any> {
         <Button onClick={this.handleSubmit.bind(this)} type='primary'>Submit</Button>
       </Form>
     )
+
+    const EditForm = (
+      <Form layout='horizontal'>
+        <FormItem {...formItemLayout} label='Name'>
+          <Input id='fullname' placeholder='Full Name' onChange={this.handleChange.bind(this)} value={this.props.fullname}/>
+        </FormItem>
+        <FormItem {...formItemLayout} label='Gender'>
+          <RadioGroup onChange={this.handleRadioChange.bind(this)} value={this.props.genderRadio}>
+            <Radio value={'male'}>Male</Radio>
+            <Radio value={'female'}>Female</Radio>
+            <Radio value={'other'}>Other</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem {...formItemLayout} label='Birthdate'>
+          <DatePicker onChange={this.handleDateChange.bind(this)} defaultValue={moment()} format={DateFormat} style={{width: '100%'}}/>
+        </FormItem>
+        <FormItem {...formItemLayout} label='E-mail'>
+          <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} value={this.props.email}/>
+        </FormItem>
+        <FormItem {...formItemLayout} label='Phone'>
+          <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} addonBefore={prefixSelector} style={{ width: '100%' }} value={this.props.phone} />
+        </FormItem>
+        <FormItem {...formItemLayout} label='Address'>
+          <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' value={this.props.address}/>
+        </FormItem>
+        <Row>
+          <Col span={12}><FormItem {...formItemLayout} style={{width: 300, alignSelf:'center'}}>{countrySelector}</FormItem></Col>
+          <Col span={12}><FormItem {...formItemLayout} style={{width: 300,  alignSelf:'center'}}>{jobSelector}</FormItem></Col>
+        </Row>
+        <FormItem {...formItemLayout} label='Referer'>
+          <Input id='refBy' onChange={this.handleChange.bind(this)} value={this.props.refBy}/>
+        </FormItem>
+        <Button onClick={this.handleSubmit.bind(this)} type='primary'>Submit</Button>
+      </Form>
+    )
+
+    const DeleteForm = (
+      <div>
+        <h2>Are you sure xyz</h2>
+      </div>
+    )
+    if(this.props.targetModal == 'add') return AddForm
+    else if(this.props.targetModal =='edit') return EditForm
+    else if (this.props.targetModal == 'delete') return DeleteForm
+    else return (<div></div>)
   }
 }
 

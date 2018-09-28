@@ -47,17 +47,12 @@ const typeDefs = gql`
     records:        [Record]
     schedules:      [Schedule]
   }
-  type Teeth {
-    code:           String
-    state:          Int
-    note:           String
-  }
   type Record {
     _id:            ID
     patientId:      String
-    recordNumber:   Int
+    recordNumber:   String
     no:             Int
-    teeth:          [Teeth]
+    teeth:          String
     cost:           String
     paid:           String
     createdDate:    Int
@@ -147,8 +142,8 @@ const typeDefs = gql`
     removePatient(_id: ID!): Patient
 
     # Record
-    addRecord(patientId: String!, recordNumber: Int!, cost: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
-    updateRecord(_id: ID!, patientId: String!, recordNumber: Int!, cost: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
+    addRecord(patientId: String!, recordNumber: String!, cost: String!, teeth: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
+    updateRecord(_id: ID!, patientId: String!, recordNumber: String!, cost: String! no: String!, teeth: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
     removeRecord(_id: ID!): Record
 
     # Room
@@ -293,35 +288,49 @@ const resolvers = {
 
     // PATIENT
     addPatient: (root, args) => {
+      // generate ID
       args._id = mongoose.Types.ObjectId()
-      Object.keys(args).forEach(function(key) {
-        if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400, args)
+
+      // FIXME: validate
+      Object.keys(args).forEach(function (key) {
+        if (key === `fullname` || key === `phone`) {
+          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+        }
       })
 
       args.isEnabled = true
       let newPatient = new Patient(args)
       return newPatient.save()
     },
-    updatePatient: (root, args) => Patient.findOneAndUpdate({ _id: args._id }, args),
+    updatePatient: (root, args) => {
+      // FIXME: validate
+      Object.keys(args).forEach(function (key) {
+        if (key === `fullname` || key === `phone`) {
+          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+        }
+      })
+
+      return Patient.findOneAndUpdate({ _id: args._id }, args)
+    },
     removePatient: (root, args) => Patient.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // RECORD
     addRecord: (root, args) => {
       async function validateData () {
-
-        Object.keys(args).forEach(function(key) {
-          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400, args)
+        // FIXME: validate
+        Object.keys(args).forEach(function (key) {
+          if (key !== `paid`) {
+            if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+          }
         })
 
-        const count = await Patient.countDocuments(args.patient)
-        if (count === 0) throw new ApolloError('Patient not exist', '400', args)
+        const patientCount = await Patient.countDocuments({_id: args.patientId})
+        if (patientCount === 0) throw new ApolloError('Patient does not exist', 400)
+
+        const doctorCount = await Doctor.countDocuments({_id: args.doctorId})
+        if (doctorCount === 0) throw new ApolloError('Doctor does not exist', 400)
 
         args._id = mongoose.Types.ObjectId()
-        // generate teeth array
-        let cycleCount = _.fill(Array(32), {})
-        let teethArr = []
-        cycleCount.map((tooth, index) => teethArr.push({ code: index + 1, state: 0, note: '' }))
-
         args.no = 0
         args.teeth = teethArr
         args.isEnabled = true
@@ -330,7 +339,16 @@ const resolvers = {
       }
       return validateData()
     },
-    updateRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, args),
+    updateRecord: (root, args) => {
+      // FIXME: validate
+      Object.keys(args).forEach(function (key) {
+        if (key !== `paid`) {
+          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+        }
+      })
+
+      return Record.findOneAndUpdate({ _id: args._id }, args)
+    },
     removeRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // ROOM

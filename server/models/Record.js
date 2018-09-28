@@ -4,9 +4,9 @@ const Schema = mongoose.Schema
 const RecordSchema = new Schema({
   _id:          String, // !
   patientId:    String, // !
-  recordNumber: Number, // !
+  recordNumber: String, // !
   no:           Number, // !
-  teeth:        Array, // !
+  teeth:        String, // !
   cost:         String, // !
   paid:         String,
   createdDate:  Number, // !

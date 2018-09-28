@@ -6,6 +6,9 @@ import { TableMedicalRecord } from '../table/TableMedicalRecord'
 import { ModalMedialRecord } from '../modal/ModalMedialRecord'
 
 class ContentMedialRecord extends React.Component<any, any> {
+  componentDidMount () {
+    this.props.InitData()
+  }
   render () {
     return (
       <div>

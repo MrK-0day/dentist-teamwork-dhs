@@ -1,5 +1,5 @@
 import { Client } from '../apollo/apollo'
-import gql from 'graphql-tag'
+import { GQL_getPatient } from '../apollo/gql'
 
 export const Home = {
   state: {
@@ -183,5 +183,14 @@ export const MedialRecord = {
         visible: false
       }
     }
-  }
+  },
+  effects: (dispatch: any) => ({
+    async InitData (payload: any, rootState: any) {
+      let res: any = await Client().query({
+        query: GQL_getPatient
+      })
+      let listname: string[] = res.data.getPatients.map((value: any) => value.fullname)
+      dispatch.MedialRecord.setState('listdatafullname', listname)
+    }
+  })
 }

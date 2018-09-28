@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 import { Client } from '../apollo/apollo'
 import { GQL_getPatient } from '../apollo/gql'
+=======
+import { Client }from '../apollo/apollo'
+import gql from 'graphql-tag'
+>>>>>>> Stashed changes
 
 export const Home = {
   state: {
@@ -43,7 +48,7 @@ export const Dashboard = {
 
 export const Patient = {
   state: {
-    targetModal: 'none',
+    addModal: false,
     genderRadio: "male",
     patientData: [
       {
@@ -55,7 +60,7 @@ export const Patient = {
         phone: '0123456789',
         nationality: 'Viet Nam',
         email: 'nva@gmai.com',
-        refby: 'Bill Gates',
+        refBy: 'Bill Gates',
       }
     ],
     fullname: '',
@@ -66,19 +71,19 @@ export const Patient = {
     phone: '',
     nationality: '',
     email: '',
-    refby: ''
+    refBy: ''
   },
   reducers: {
-    openModal (state: any, target: String) {
+    openAddModal (state: any) {
       return {
         ...state,
-        targetModal: target
+        addModal: true
       }
     },
-    closeModal (state: any) {
+    closeAddModal (state: any) {
       return {
         ...state,
-        targetModal: 'none'
+        addModal: false
       }
     },
     onGenderRadioChange (state: any, payload: any) {
@@ -94,7 +99,7 @@ export const Patient = {
         [key]: value
       }
     },
-    initData (state: any) {
+    resetData (state: any) {
       return{
         ...state,
         fullname: '',
@@ -105,7 +110,13 @@ export const Patient = {
         phone: '',
         nationality: '',
         email: '',
-        refby: ''
+        refBy: ''
+      }
+    },
+    initData (state: any, data: any) {
+      return{
+        ...state,
+        patientData: data
       }
     },
     addPatient (state: any){
@@ -119,16 +130,12 @@ export const Patient = {
         phone: state.phone,
         nationality: state.nationality,
         email: state.email,
-        refby: state.refby
+        refBy: state.refBy
       }
       newPatientData.push(newPatient)
       return {
         ...state,
-        patientData: newPatientData
-      }
-      console.log(state)
-      return{
-        ...state,
+        patientData: newPatientData,
         fullname: '',
         gender: '',
         dob: 0,
@@ -137,40 +144,35 @@ export const Patient = {
         phone: '',
         nationality: '',
         email: '',
-        refby: ''
+        refBy: ''
       }
     }
 
-  }
+  },
+  effects: (dispatch: any) =>({
+    async asyncInitData (rootState: any) {
+      Client()
+        .query(
+          {
+            query: gql`
+            {
+              getPatients{
+                _id fullname gender dob career address phone nationality email refBy
+              }
+            }`
+          }
+        ).then((result: object)=>{
+          console.log(result)
+        })
+    }
+  })
 }
 
 export const MedialRecord = {
   state: {
-    visible: false,
-    visibletooth: false,
-    fullname: '',
-    date: '',
-    cost: '0',
-    paid: '0',
-    docter: '',
-    listdatafullname: ['Phát', 'Tuấn', 'Lộc'],
-    listtooth: []
+    visible: false
   },
   reducers: {
-    setState (state: any, key: any, value: any) {
-      if (key === 'cost' || key === 'paid') {
-        let cost = value.replace(/[\D\s\._\-]+/g, '')
-        cost = cost ? parseInt(cost, 10) : 0
-        return {
-          ...state,
-          [key]: cost.toLocaleString('vi-VN')
-        }
-      }
-      return {
-        ...state,
-        [key]: value
-      }
-    },
     onOpenModalAdd (state: any) {
       return {
         ...state,

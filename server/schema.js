@@ -24,9 +24,18 @@ const typeDefs = gql`
   }
   type Doctor {
     _id:            ID
+    username:       String
+    password:       String
     fullname:       String
     specialize:     String
+    gender:         String
+    dob:            String
+    address:        String
     phone:          String
+    email:          String
+    nationality:    String
+    refBy:          String
+    medicalHistory: [String]
     isEnabled:      Boolean
     records:        [Record]
     schedules:      [Schedule]
@@ -126,14 +135,17 @@ const typeDefs = gql`
     # reset Data
     resetAll(confirm: String!): Boolean
 
+    # change Password
+    changePassword(_id: ID!, password: String!): Doctor
+
     #Disease
     addDisease(name: String!): Disease
     updateDisease(_id: ID!, name: String!): Disease
     removeDisease(_id: ID!): Disease
 
     # Doctor
-    addDoctor(fullname: String!, specialize: String, phone: String!): Doctor
-    updateDoctor(_id: ID!, fullname: String!, specialize: String, phone: String!): Doctor
+    addDoctor(username: String!, password: String!, fullname: String!, specialize: String!, gender: String, dob: String, address: String, phone: String!, email: String, nationality: String, refBy: String, medicalHistory: [String]): Doctor
+    updateDoctor(_id: ID!, fullname: String!, specialize: String!, gender: String, dob: String, address: String, phone: String!, email: String, nationality: String, refBy: String, medicalHistory: [String]): Doctor
     removeDoctor(_id: ID!): Doctor
 
     # Patient
@@ -252,7 +264,7 @@ const resolvers = {
   },
 
   Mutation: {
-    // RESET DATA
+    // FIXME: RESET DATA
     resetAll: (root, args) => {
       if (args.confirm === 'yes') {
         Doctor.deleteMany({}).exec()
@@ -266,7 +278,12 @@ const resolvers = {
       return false
     },
 
-    // DISEASE
+    // FIXME: CHANGE PASSWORD
+    changePassword: (root, args) => {
+      return Doctor.findOneAndUpdate({_id: args._id}, args)
+    },
+
+    // FIXME: DISEASE
     addDisease: (root, args) => {
       args._id = mongoose.Types.ObjectId()
       args.isEnabled = true
@@ -276,24 +293,30 @@ const resolvers = {
     updateDisease: (root, args) => Disease.findOneAndUpdate({ _id: args._id }, args),
     removeDisease: (root, args) => Disease.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
-    // DOCTOR
+    // FIXME: DOCTOR
     addDoctor: (root, args) => {
-      // FIXME: validate
-      Object.keys(args).forEach(function (key) {
-        if (key !== `specialize`) {
-          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
-        }
-      })
+      async function validateDoctor() {
+        // validate
+        Object.keys(args).forEach(function (key) {
+          if (key === `username` || key === `password` || key === `fullname` || key === `specialize` || key === `phone`) {
+            if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+          }
+        })
 
-      args._id = mongoose.Types.ObjectId()
-      args.isEnabled = true
-      let newDoctor = new Doctor(args)
-      return newDoctor.save()
+        const doctorCount = await Doctor.countDocuments({username: args.username})
+        if (doctorCount !== 0) throw new ApolloError('Username has already used', 400)
+
+        args._id = mongoose.Types.ObjectId()
+        args.isEnabled = true
+        let newDoctor = new Doctor(args)
+        return newDoctor.save()
+      }
+      return validateDoctor()
     },
     updateDoctor: (root, args) => {
-      // FIXME: validate
+      // validate
       Object.keys(args).forEach(function (key) {
-        if (key !== `specialize`) {
+        if (key === `fullname` || key === `specialize` || key === `phone`) {
           if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
         }
       })
@@ -302,24 +325,22 @@ const resolvers = {
     },
     removeDoctor: (root, args) => Doctor.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
-    // PATIENT
+    // FIXME: PATIENT
     addPatient: (root, args) => {
-      // generate ID
-      args._id = mongoose.Types.ObjectId()
-
-      // FIXME: validate
+      // validate
       Object.keys(args).forEach(function (key) {
         if (key === `fullname` || key === `phone`) {
           if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
         }
       })
 
+      args._id = mongoose.Types.ObjectId()
       args.isEnabled = true
       let newPatient = new Patient(args)
       return newPatient.save()
     },
     updatePatient: (root, args) => {
-      // FIXME: validate
+      // validate
       Object.keys(args).forEach(function (key) {
         if (key === `fullname` || key === `phone`) {
           if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
@@ -330,10 +351,10 @@ const resolvers = {
     },
     removePatient: (root, args) => Patient.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
-    // RECORD
+    // FIXME: RECORD
     addRecord: (root, args) => {
       async function validateData () {
-        // FIXME: validate
+        // validate
         Object.keys(args).forEach(function (key) {
           if (key !== `paid`) {
             if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
@@ -355,7 +376,7 @@ const resolvers = {
       return validateData()
     },
     updateRecord: (root, args) => {
-      // FIXME: validate
+      // validate
       Object.keys(args).forEach(function (key) {
         if (key !== `paid`) {
           if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
@@ -366,7 +387,7 @@ const resolvers = {
     },
     removeRecord: (root, args) => Record.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
-    // ROOM
+    // FIXME: ROOM
     addRoom: (root, args) => {
       args._id = mongoose.Types.ObjectId()
       args.isEnabled = true
@@ -376,7 +397,7 @@ const resolvers = {
     updateRoom: (root, args) => Room.findOneAndUpdate({ _id: args._id }, args),
     removeRoom: (root, args) => Room.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
-    // SCHEDULE
+    // FIXME: SCHEDULE
     addSchedule: (root, args) => {
       args._id = mongoose.Types.ObjectId()
       args.isEnabled = true
@@ -386,7 +407,7 @@ const resolvers = {
     updateSchedule: (root, args) => Schedule.findOneAndUpdate({ _id: args._id }, args),
     removeSchedule: (root, args) => Schedule.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
-    // STEP
+    // FIXME: STEP
     addStep: (root, args) => {
       args._id = mongoose.Types.ObjectId()
       args.state = 0
@@ -397,7 +418,7 @@ const resolvers = {
     updateStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, args),
     removeStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
-    // TREATMENT
+    // FIXME: TREATMENT
     addTreatment: (root, args) => {
       args._id = mongoose.Types.ObjectId()
       args.isEnabled = true

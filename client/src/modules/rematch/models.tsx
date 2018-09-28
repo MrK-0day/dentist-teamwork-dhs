@@ -106,7 +106,20 @@ export const Patient = {
             query: GQL_getPatient
           }
         )
-      let newPatientList = [...res.data.getPatients]
+      console.log(res.data.getPatients)
+      let newPatientList = res.data.getPatients.map((patient: any)=>{
+        return {
+          fullname: patient.fullname,
+          gender: patient.gender,
+          dob: moment(patient.dob*1000).format(`DD-MM-YYYY`),
+          career: patient.career,
+          address: patient.address,
+          phone: patient.phone,
+          nationality: patient.nationality,
+          email: patient.email,
+          refBy: patient.refBy
+        }
+      })
       dispatch.Patient.setMyState('patientData',newPatientList)
     },
     async asyncAddPatient (payload: any, rootState: any){
@@ -126,7 +139,11 @@ export const Patient = {
         },
         mutation: GQL_addPatient
       })
-      newPatientData.push(res.data.addPatient)
+      let newPatient = {
+        ...res.data.addPatient
+      }
+      newPatient['dob'] = moment(res.data.addPatient.dob*1000).format(`DD-MM-YYYY`)
+      newPatientData.push(newPatient)
       console.log(newPatientData)
     }
 

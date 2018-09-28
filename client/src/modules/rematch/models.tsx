@@ -145,6 +145,7 @@ export const Patient = {
       newPatient['dob'] = moment(res.data.addPatient.dob*1000).format(`DD-MM-YYYY`)
       newPatientData.push(newPatient)
       console.log(newPatientData)
+      dispatch.Patient.setMyState('patientData',newPatientData)
     }
 
   })

@@ -150,14 +150,22 @@ export const MedialRecord = {
     visibletooth: false,
     fullname: '',
     date: '',
-    cost: 0,
-    paid: 0,
+    cost: '0',
+    paid: '0',
     docter: '',
     listdatafullname: ['Phát', 'Tuấn', 'Lộc'],
     listtooth: []
   },
   reducers: {
     setState (state: any, key: any, value: any) {
+      if (key === 'cost' || key === 'paid') {
+        let cost = value.replace(/[\D\s\._\-]+/g, '')
+        cost = cost ? parseInt(cost, 10) : 0
+        return {
+          ...state,
+          [key]: cost.toLocaleString('vi-VN')
+        }
+      }
       return {
         ...state,
         [key]: value

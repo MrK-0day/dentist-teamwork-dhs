@@ -64,10 +64,10 @@ export const AddMedialRecord = ({ props }: { props: any }) => {
         <DatePicker onChange={handleChangeDate} placeholder='Date' defaultValue={moment()} format='DD-MM-YYYY' style={{ width: '100%' }} />
       </Form.Item>
       <Form.Item {...formItemLayout} label='Tổng Tiền'>
-        <Input type='number' value={props.cost} step='100000' name='cost' onChange={handleChange} placeholder='Cost' />
+        <Input type='text' value={props.cost} name='cost' onChange={handleChange} placeholder='Cost' />
       </Form.Item>
       <Form.Item {...formItemLayout} label='Đã Thanh Toán'>
-        <Input type='number' value={props.paid} step='100000' name='paid' onChange={handleChange} placeholder='Paid' />
+        <Input type='text' value={props.paid} name='paid' onChange={handleChange} placeholder='Paid' />
       </Form.Item>
       <Form.Item>
         <img style={{ width: '100%' }} src={toothmap} />

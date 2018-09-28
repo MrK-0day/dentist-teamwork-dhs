@@ -1,6 +1,5 @@
 import { Client } from '../apollo/apollo'
-import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient } from '../apollo/gql'
-
+import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_removeRecord } from '../apollo/gql'
 const moment = require('moment')
 
 export const Home = {
@@ -163,19 +162,83 @@ export const Patient = {
 
 export const MedialRecord = {
   state: {
-    visible: false
+    visible: false,
+    visibletooth: false,
+    mahoso: '',
+    fullname: '',
+    date: '',
+    cost: '0',
+    paid: '0',
+    docter: '',
+    listdatafullname: [],
+    listtooth: [],
+    notecount: -1,
+    notetext: '',
+    listdatarecord: []
   },
   reducers: {
+    setState (state: any, key: any, value: any) {
+      if (key === 'cost' || key === 'paid') {
+        let cost = value.replace(/[\D\s\._\-]+/g, '')
+        cost = cost ? parseInt(cost, 10) : 0
+        return {
+          ...state,
+          [key]: cost.toLocaleString('vi-VN')
+        }
+      }
+      return {
+        ...state,
+        [key]: value
+      }
+    },
     onOpenModalAdd (state: any) {
       return {
         ...state,
-        visible: true
+        visible: true,
+        date: moment()
       }
     },
-    onCloseModalAdd (state: any) {
+    onCloseModalAdd (state: any, payload: any) {
+      if (payload === 'OK') {
+        return {
+          ...state,
+          visible: false
+        }
+      } else {
+        return {
+          ...state,
+          visible: false,
+          cost: '0',
+          paid: '0',
+          fullname: '',
+          listtooth: [],
+          mahoso: ''
+        }
+      }
+    },
+    onOpenDrawNote (state: any, payload: any) {
       return {
         ...state,
-        visible: false
+        visibletooth: true,
+        notecount: payload
+      }
+    },
+    onCloseDrawNode (state: any, payload: any) {
+      let log = [...state.listtooth]
+      if (payload === 'OK') {
+        for (let i in log) {
+          if (log[i].tooth === state.notecount) {
+            log[i].note = state.notetext
+            break
+          }
+        }
+      }
+      return {
+        ...state,
+        visibletooth: false,
+        notecount: -1,
+        notetext: '',
+        listtooth: log
       }
     }
   },
@@ -184,8 +247,76 @@ export const MedialRecord = {
       let res: any = await Client().query({
         query: GQL_getPatient
       })
-      let listname: string[] = res.data.getPatients.map((value: any) => value.fullname)
+      let listname: string[] = res.data.getPatients.map((value: any) => { return { key: value._id, data: `${value.fullname} - ${value.phone}` } })
+      // let listname: string[] = res.data.getPatients.map((value: any) => `${value.fullname} - ${value.phone}` )
       dispatch.MedialRecord.setState('listdatafullname', listname)
+    },
+    async addMedialRecords (payload: any, rootState: any) {
+      let id = null
+      for (let v of rootState.MedialRecord.listdatafullname) {
+        if (v.data === rootState.MedialRecord.fullname) {
+          id = v.key
+          break
+        }
+      }
+      let data = {
+        patientId: rootState.MedialRecord.fullname,
+        recordNumber: rootState.MedialRecord.mahoso,
+        cost: rootState.MedialRecord.cost,
+        paid: rootState.MedialRecord.paid,
+        teeth: JSON.stringify(rootState.MedialRecord.listtooth),
+        createdDate: 123456,
+        treatment: '{}',
+        doctorId: '5badf119883e91274201b543'
+      }
+      let res: any = await Client().mutate({
+        variables: data,
+        mutation: GQL_addRecord
+      })
+      let log: any = res.data.addRecord
+      let data1: any[] = [...rootState.MedialRecord.listdatarecord]
+      data1.push({
+        key: log._id,
+        action: log._id,
+        patient: log.patient.fullname,
+        no: log.no,
+        recordnumber: log.recordNumber,
+        step: '0',
+        cost: log.cost,
+        paid: log.paid
+      })
+      dispatch.MedialRecord.setState('listdatarecord', data1)
+      return true
+    },
+    async InitMedialRecord (payload: any, rootState: any) {
+      let res: any = await Client().query({
+        query: GQL_getRecords
+      })
+      let log: any[] = res.data.getRecords
+      let data: any[] = log.map((value: any) => {
+        return {
+          key: value._id,
+          action: value._id,
+          patient: value.patient.fullname,
+          no: value.no,
+          recordnumber: value.recordNumber,
+          step: '0',
+          cost: value.cost,
+          paid: value.paid
+        }
+      }) 
+      dispatch.MedialRecord.setState('listdatarecord', data)
+    },
+    async RemoveMedialRecord (payload: any, rootState: any) {
+      Client().mutate({
+        variables: { _id: payload },
+        mutation: GQL_removeRecord
+      })
+      let data = [...rootState.MedialRecord.listdatarecord].filter((value: any) => value.key !== payload)
+      dispatch.MedialRecord.setState('listdatarecord', data)
+    },
+    async editMedialRecord (payload: any, rootState: any) {
+      console.log(payload)
     }
   })
 }

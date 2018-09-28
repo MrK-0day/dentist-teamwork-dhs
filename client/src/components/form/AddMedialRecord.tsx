@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Form, Input, DatePicker, Select } from 'antd'
-let moment = require('moment')
 let toothmap =  require('../../images/tooth-map.jpe')
 
 const formItemLayout = {
@@ -26,7 +25,7 @@ const SearchInput = ({ props }: { props: any }) => {
     >
       {props.listdatafullname.map((value: any) => {
         return (
-          <Select.Option key={value}>{value}</Select.Option>
+          <Select.Option key={value.key}>{value.data}</Select.Option>
         )
       })}
     </Select>
@@ -41,39 +40,50 @@ export const AddMedialRecord = ({ props }: { props: any }) => {
     props.setState(e.target.name, e.target.value)
   }
   function handleChangeDate (date: any, dateString: any) {
-    props.setState('date', dateString)
+    props.setState('date', date)
   }
   function handleChangeTooth (value: any) {
+    let find = (v: any) => {
+      for (let i in props.listtooth) {
+        if (props.listtooth[i].tooth === v) return props.listtooth[i].note
+      }
+    }
     let data = value.map((v: any) => {
+      let cc = find(v)
       return {
         tooth: v,
-        note: ''
+        note: cc
       }
     })
     props.setState('listtooth', data)
-    if (value.length < props.listtooth.length) {
-      console.log(value)
+    if (value.length > props.listtooth.length) {
+      // console.log(value[value.length - 1])
+      props.onOpenDrawNote(value[value.length - 1])
     }
   }
+  const _listtooth = props.listtooth.map((value: any) => value.tooth)
   return (
     <Form layout='horizontal' style={{ width: '100%' }}>
+      <Form.Item {...formItemLayout} label='Mã Hồ  Sơ'>
+        <Input type='text' value={props.mahoso} name='mahoso' onChange={handleChange} placeholder='Mã Hồ Sơ' />
+      </Form.Item>
       <Form.Item {...formItemLayout} label='Bệnh Nhân'>
         <SearchInput props={props} />
       </Form.Item>
       <Form.Item {...formItemLayout} label='Ngày'>
-        <DatePicker onChange={handleChangeDate} placeholder='Date' defaultValue={moment()} format='DD-MM-YYYY' style={{ width: '100%' }} />
+        <DatePicker onChange={handleChangeDate} placeholder='Ngày' value={props.date} format='DD-MM-YYYY' style={{ width: '100%' }} />
       </Form.Item>
       <Form.Item {...formItemLayout} label='Tổng Tiền'>
-        <Input type='text' value={props.cost} name='cost' onChange={handleChange} placeholder='Cost' />
+        <Input type='text' value={props.cost} name='cost' onChange={handleChange} placeholder='Tổng Tiền' />
       </Form.Item>
       <Form.Item {...formItemLayout} label='Đã Thanh Toán'>
-        <Input type='text' value={props.paid} name='paid' onChange={handleChange} placeholder='Paid' />
+        <Input type='text' value={props.paid} name='paid' onChange={handleChange} placeholder='Đã Thanh Toán' />
       </Form.Item>
       <Form.Item>
         <img style={{ width: '100%' }} src={toothmap} />
       </Form.Item>
       <Form.Item {...formItemLayout} label='Răng'>
-        <Select defaultValue={[]} onChange={handleChangeTooth} mode='multiple' placeholder='Tooth'>
+        <Select value={_listtooth} onChange={handleChangeTooth} mode='multiple' placeholder='Răng'>
           {listTooth.map(value => {
             return <Select.Option key={value}>{value}</Select.Option>
           })}

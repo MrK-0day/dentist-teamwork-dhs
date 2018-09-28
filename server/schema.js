@@ -348,7 +348,6 @@ const resolvers = {
 
         args._id = mongoose.Types.ObjectId()
         args.no = 0
-        args.teeth = teethArr
         args.isEnabled = true
         let newRecord = new Record(args)
         return newRecord.save()

@@ -278,12 +278,28 @@ const resolvers = {
 
     // DOCTOR
     addDoctor: (root, args) => {
+      // FIXME: validate
+      Object.keys(args).forEach(function (key) {
+        if (key !== `specialize`) {
+          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+        }
+      })
+
       args._id = mongoose.Types.ObjectId()
       args.isEnabled = true
       let newDoctor = new Doctor(args)
       return newDoctor.save()
     },
-    updateDoctor: (root, args) => Doctor.findOneAndUpdate({ _id: args._id }, args),
+    updateDoctor: (root, args) => {
+      // FIXME: validate
+      Object.keys(args).forEach(function (key) {
+        if (key !== `specialize`) {
+          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+        }
+      })
+
+      return Doctor.findOneAndUpdate({ _id: args._id }, args)
+    },
     removeDoctor: (root, args) => Doctor.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
     // PATIENT

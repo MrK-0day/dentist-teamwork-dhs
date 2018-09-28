@@ -2,7 +2,16 @@ import * as React from 'react'
 import { Table, Button, Modal } from 'antd'
 
 
+
 export const TablePatient = ({ props }: { props: any }) => {
+  function handleClick(event: any) {
+    console.log(props)
+    console.log(event.target)
+    if(event.target.name=='delete') {
+      props.asyncDeletePatient(event.target.value)
+      props.asyncInitData()
+    }
+  }
   const columns = [
     {
       title:'Name',
@@ -55,8 +64,8 @@ export const TablePatient = ({ props }: { props: any }) => {
       title:'Actions',
       key:'actions',
       width: 170,
-      render: () => (
-        <span><Button type='primary' onClick={()=>props.openModal('edit')}>Edit</Button><Button onClick={()=>props.openModal('delete')}>Delete</Button></span>
+      render: (text: any, row: any) => (
+        <span><Button name='edit' value={row.id} type='primary' onClick={handleClick}>Edit</Button><Button name='delete' value={row.id} onClick={handleClick}>Delete</Button></span>
       )
     }
   ]

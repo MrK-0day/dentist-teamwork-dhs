@@ -1,5 +1,5 @@
 import { Client } from '../apollo/apollo'
-import { GQL_getPatient, GQL_addPatient } from '../apollo/gql'
+import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient } from '../apollo/gql'
 
 const moment = require('moment')
 
@@ -109,6 +109,7 @@ export const Patient = {
       console.log(res.data.getPatients)
       let newPatientList = res.data.getPatients.map((patient: any)=>{
         return {
+          id: patient._id,
           fullname: patient.fullname,
           gender: patient.gender,
           dob: moment(patient.dob*1000).format(`DD-MM-YYYY`),
@@ -146,8 +147,17 @@ export const Patient = {
       newPatientData.push(newPatient)
       console.log(newPatientData)
       dispatch.Patient.setMyState('patientData',newPatientData)
+    },
+    async asyncDeletePatient (id: any, rootState: any) {
+      let res: any = await Client().mutate(
+        {
+          variables: {
+            'id': id
+          },
+          mutation: GQL_deletePatient
+        }
+      )
     }
-
   })
 }
 

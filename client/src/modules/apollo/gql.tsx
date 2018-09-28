@@ -20,3 +20,18 @@ export const GQL_addPatient = gql`
     }
   }
 `
+
+export const GQL_deletePatient = gql`
+  mutation removePatient ($id: ID!) {
+    removePatient(_id:$id){
+      fullname
+    }
+  }
+`
+
+export const GQL_updatePatient = gql`
+  mutation removePatient ($id: ID!) {
+    removePatient(_id:$id){
+      fullname
+    }
+  }`

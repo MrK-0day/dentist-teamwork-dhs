@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { Form, Input, Select, Row, Col, Checkbox, Button, Radio, DatePicker } from 'antd'
+import { Form, Input, Select, Row, Col, Divider ,Checkbox, Button, Radio, DatePicker } from 'antd'
 
 import { phone_prefixes, countries } from '../misc/regionData'
 import { DateFormat } from '../misc/const'
@@ -95,7 +95,7 @@ class PatientForm extends React.Component<any, any> {
         </FormItem>
         <FormItem {...formItemLayout} label='Phone'>
           <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} addonBefore={prefixSelector} style={{ width: '100%' }} value={this.props.phone} />
-        </FormItem>
+        </FormItem>r
         <FormItem {...formItemLayout} label='Address'>
           <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' value={this.props.address}/>
         </FormItem>
@@ -106,7 +106,6 @@ class PatientForm extends React.Component<any, any> {
         <FormItem {...formItemLayout} label='Referer'>
           <Input id='refBy' onChange={this.handleChange.bind(this)} value={this.props.refBy}/>
         </FormItem>
-        <Button onClick={this.handleSubmit.bind(this)} type='primary'>Submit</Button>
       </Form>
     )
 
@@ -141,13 +140,12 @@ class PatientForm extends React.Component<any, any> {
         <FormItem {...formItemLayout} label='Referer'>
           <Input id='refBy' onChange={this.handleChange.bind(this)} value={this.props.refBy}/>
         </FormItem>
-        <Button onClick={this.handleSubmit.bind(this)} type='primary'>Submit</Button>
       </Form>
     )
 
     const DeleteForm = (
       <div>
-        <h2>Are you sure xyz</h2>
+        <h2>Are you sure xyz to delete</h2>
       </div>
     )
     if(this.props.targetModal == 'add') return AddForm

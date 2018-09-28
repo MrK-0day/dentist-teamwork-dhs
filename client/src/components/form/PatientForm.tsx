@@ -29,6 +29,7 @@ class PatientForm extends React.Component<any, any> {
     this.props.onGenderRadioChange(e.target.value)
   }
   handleSubmit(){
+    this.props.asyncAddPatient()
     console.log(this.props)
   }
   handleChange(e: any){

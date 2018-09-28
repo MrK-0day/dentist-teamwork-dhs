@@ -48,8 +48,8 @@ export const TablePatient = ({ props }: { props: any }) => {
     },
     {
       title:'Referer',
-      key:'refby',
-      dataIndex:'refby'
+      key:'refBy',
+      dataIndex:'refBy'
     },
     {
       title:'Actions',

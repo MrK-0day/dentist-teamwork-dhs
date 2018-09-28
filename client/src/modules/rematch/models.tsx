@@ -1,5 +1,7 @@
 import { Client } from '../apollo/apollo'
-import { GQL_getPatient } from '../apollo/gql'
+import { GQL_getPatient, GQL_addPatient } from '../apollo/gql'
+
+const moment = require('moment')
 
 export const Home = {
   state: {
@@ -45,21 +47,9 @@ export const Patient = {
   state: {
     targetModal: 'none',
     genderRadio: "male",
-    patientData: [
-      {
-        fullname: 'Nguyen Van A',
-        gender: 'male',
-        dob: '12-12-2012',
-        career: 'abc',
-        address: '123 def',
-        phone: '0123456789',
-        nationality: 'Viet Nam',
-        email: 'nva@gmai.com',
-        refBy: 'Bill Gates',
-      }
-    ],
+    patientData: [],
     fullname: '',
-    gender: '',
+    gender: 'male',
     dob: 0,
     career: '',
     address: '',
@@ -106,54 +96,40 @@ export const Patient = {
         email: '',
         refBy: ''
       }
-    },
-    initData (state: any, data: any) {
-      return{
-        ...state,
-        patientData: data
-      }
-    },
-    addPatient (state: any){
-      let newPatientData = [...state.patientData]
-      let newPatient= {
-        name: state.fullname,
-        gender: state.gender,
-        dob: state.dob,
-        career: state.careeer,
-        address: state.address,
-        phone: state.phone,
-        nationality: state.nationality,
-        email: state.email,
-        refBy: state.refBy
-      }
-      newPatientData.push(newPatient)
-      return {
-        ...state,
-        patientData: newPatientData,
-        fullname: '',
-        gender: '',
-        dob: 0,
-        career: '',
-        address: '',
-        phone: '',
-        nationality: '',
-        email: '',
-        refBy: ''
-      }
     }
-
   },
   effects: (dispatch: any) =>({
-    async asyncInitData (rootState: any) {
-      Client()
+    async asyncInitData (payload: any,rootState: any) {
+      let res: any =await Client()
         .query(
           {
             query: GQL_getPatient
           }
-        ).then((result: object)=>{
-          console.log(result)
-        })
+        )
+      let newPatientList = [...res.data.getPatients]
+      dispatch.Patient.setMyState('patientData',newPatientList)
+    },
+    async asyncAddPatient (payload: any, rootState: any){
+      console.log(rootState.Patient)
+      let newPatientData = [...rootState.Patient.patientData]
+      let res : any = await Client().mutate({
+        variables: {
+          'fullname': rootState.Patient.fullname,
+          'gender': rootState.Patient.gender,
+          'dob': rootState.Patient.dob.toString(),
+          'career': rootState.Patient.career,
+          'address': rootState.Patient.address,
+          'phone': rootState.Patient.phone,
+          'nationality': rootState.Patient.nationality,
+          'email': rootState.Patient.email,
+          'refBy': rootState.Patient.refBy
+        },
+        mutation: GQL_addPatient
+      })
+      newPatientData.push(res.data.addPatient)
+      console.log(newPatientData)
     }
+
   })
 }
 

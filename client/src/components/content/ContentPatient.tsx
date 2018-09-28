@@ -9,6 +9,7 @@ const Search = Input.Search
 class ContentPatient extends React.Component<any, any> {
   render () {
     console.log(this.props.targetModal)
+    this.props.asyncInitData()
     return (
       <div>
         <Row gutter={10} className='patient-table-header'>

@@ -8,8 +8,8 @@ export const GQL_getRecords = gql`
 `
 export const GQL_getPatient = gql`
   {
-    getPatients {
-      fullname
+    getPatients{
+      _id fullname gender dob career address phone nationality email refBy
     }
   }
 `

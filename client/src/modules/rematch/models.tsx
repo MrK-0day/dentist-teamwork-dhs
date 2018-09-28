@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
 import { Client } from '../apollo/apollo'
 import { GQL_getPatient } from '../apollo/gql'
-=======
-import { Client }from '../apollo/apollo'
-import gql from 'graphql-tag'
->>>>>>> Stashed changes
 
 export const Home = {
   state: {
@@ -48,7 +43,7 @@ export const Dashboard = {
 
 export const Patient = {
   state: {
-    addModal: false,
+    targetModal: 'none',
     genderRadio: "male",
     patientData: [
       {
@@ -74,16 +69,16 @@ export const Patient = {
     refBy: ''
   },
   reducers: {
-    openAddModal (state: any) {
+    openModal (state: any, target: string) {
       return {
         ...state,
-        addModal: true
+        targetModal: target
       }
     },
-    closeAddModal (state: any) {
+    closeModal (state: any) {
       return {
         ...state,
-        addModal: false
+        targetModal: 'none'
       }
     },
     onGenderRadioChange (state: any, payload: any) {
@@ -101,8 +96,7 @@ export const Patient = {
     },
     resetData (state: any) {
       return{
-        ...state,
-        fullname: '',
+        ...state,fullname: '',
         gender: '',
         dob: 0,
         career: '',
@@ -154,12 +148,7 @@ export const Patient = {
       Client()
         .query(
           {
-            query: gql`
-            {
-              getPatients{
-                _id fullname gender dob career address phone nationality email refBy
-              }
-            }`
+            query: GQL_getPatient
           }
         ).then((result: object)=>{
           console.log(result)

@@ -140,7 +140,7 @@ const typeDefs = gql`
     removeDoctor(_id: ID!): Doctor
 
     # Patient
-    addPatient(fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refby: String, medicalhistory: [String]): Patient
+    addPatient(fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refBy: String, medicalHistory: [String]): Patient
     updatePatient(_id: ID!, fullname: String!, gender: String, dob: String, career: String, address: String, phone: String!, nationality: String, email: String, refBy: String, medicalHistory: [String]): Patient
     removePatient(_id: ID!): Patient
 

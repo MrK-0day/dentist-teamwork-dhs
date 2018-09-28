@@ -7,8 +7,8 @@ const RecordSchema = new Schema({
   recordNumber: Number, // !
   no:           Number, // !
   teeth:        Array, // !
-  cost:         Number, // !
-  paid:         Number,
+  cost:         String, // !
+  paid:         String,
   createdDate:  Number, // !
   treatment:    String, // !
   doctorId:     String, // !

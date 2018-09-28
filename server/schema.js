@@ -14,6 +14,8 @@ const Schedule = require('./models/Schedule')
 const Step = require('./models/Step')
 const Treatment = require('./models/Treatment')
 
+const checkTruthy = (value) => value ? true : false
+
 const typeDefs = gql`
   type Disease {
     _id:            ID
@@ -56,8 +58,8 @@ const typeDefs = gql`
     recordNumber:   Int
     no:             Int
     teeth:          [Teeth]
-    cost:           Int
-    paid:           Int
+    cost:           String
+    paid:           String
     createdDate:    Int
     treatment:      String
     doctorId:       String
@@ -145,8 +147,8 @@ const typeDefs = gql`
     removePatient(_id: ID!): Patient
 
     # Record
-    addRecord(patientId: String!, recordNumber: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
-    updateRecord(_id: ID!, patientId: String!, recordNumber: Int!, cost: Int!, paid: Int, createdDate: Int!, treatment: String!, doctorId: String!): Record
+    addRecord(patientId: String!, recordNumber: Int!, cost: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
+    updateRecord(_id: ID!, patientId: String!, recordNumber: Int!, cost: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
     removeRecord(_id: ID!): Record
 
     # Room
@@ -292,6 +294,10 @@ const resolvers = {
     // PATIENT
     addPatient: (root, args) => {
       args._id = mongoose.Types.ObjectId()
+      Object.keys(args).forEach(function(key) {
+        if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400, args)
+      })
+
       args.isEnabled = true
       let newPatient = new Patient(args)
       return newPatient.save()
@@ -302,7 +308,11 @@ const resolvers = {
     // RECORD
     addRecord: (root, args) => {
       async function validateData () {
-        console.log(args.patientId)
+
+        Object.keys(args).forEach(function(key) {
+          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400, args)
+        })
+
         const count = await Patient.countDocuments(args.patient)
         if (count === 0) throw new ApolloError('Patient not exist', '400', args)
 

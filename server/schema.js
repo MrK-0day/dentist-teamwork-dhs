@@ -2,7 +2,8 @@ const { gql, ApolloError } = require('apollo-server-express')
 // const pubsub = new PubSub()
 // const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
-const _ = require('lodash')
+const SHA256 = require('crypto-js/sha256')
+// const _ = require('lodash')
 
 // models
 const Disease = require('./models/Disease')
@@ -14,7 +15,7 @@ const Schedule = require('./models/Schedule')
 const Step = require('./models/Step')
 const Treatment = require('./models/Treatment')
 
-const checkTruthy = (value) => value ? true : false
+const checkTruthy = (value) => value || false
 
 const typeDefs = gql`
   type Disease {
@@ -129,6 +130,9 @@ const typeDefs = gql`
     getSteps:            [Step]
     treatment(_id: ID!):  Treatment
     getTreatments:     [Treatment]
+
+    # Login
+    signIn(username: String!, password: String!): Doctor
   }
 
   type Mutation {
@@ -197,7 +201,19 @@ const resolvers = {
     step:           (root, args, context, info) => Step.findById(args._id),
     getSteps:       (root, args, context, info) => Step.find({ isEnabled: true }),
     treatment:      (root, args, context, info) => Treatment.findById(args._id),
-    getTreatments:  (root, args, context, info) => Treatment.find({ isEnabled: true })
+    getTreatments:  (root, args, context, info) => Treatment.find({ isEnabled: true }),
+    // FIXME: Login
+    signIn: (root, args) => {
+      async function findUser (username, password) {
+        console.log(password)
+        let encryptedPassword = SHA256(password).toString()
+        console.log(encryptedPassword)
+        const result = await Doctor.findOne({ username, password: encryptedPassword })
+        if (!result) throw new ApolloError(`Wrong username or password`, 400)
+        return result
+      }
+      return findUser(args.username, args.password)
+    }
   },
 
   Doctor: {
@@ -280,7 +296,7 @@ const resolvers = {
 
     // FIXME: CHANGE PASSWORD
     changePassword: (root, args) => {
-      return Doctor.findOneAndUpdate({_id: args._id}, args)
+      return Doctor.findOneAndUpdate({ _id: args._id }, args)
     },
 
     // FIXME: DISEASE
@@ -295,17 +311,18 @@ const resolvers = {
 
     // FIXME: DOCTOR
     addDoctor: (root, args) => {
-      async function validateDoctor() {
+      async function validateDoctor () {
         // validate
         Object.keys(args).forEach(function (key) {
           if (key === `username` || key === `password` || key === `fullname` || key === `specialize` || key === `phone`) {
-            if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+            if (!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
           }
         })
 
-        const doctorCount = await Doctor.countDocuments({username: args.username})
+        const doctorCount = await Doctor.countDocuments({ username: args.username })
         if (doctorCount !== 0) throw new ApolloError('Username has already used', 400)
 
+        args.password = SHA256(args.password).toString()
         args._id = mongoose.Types.ObjectId()
         args.isEnabled = true
         let newDoctor = new Doctor(args)
@@ -317,7 +334,7 @@ const resolvers = {
       // validate
       Object.keys(args).forEach(function (key) {
         if (key === `fullname` || key === `specialize` || key === `phone`) {
-          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+          if (!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
         }
       })
 
@@ -330,7 +347,7 @@ const resolvers = {
       // validate
       Object.keys(args).forEach(function (key) {
         if (key === `fullname` || key === `phone`) {
-          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+          if (!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
         }
       })
 
@@ -343,7 +360,7 @@ const resolvers = {
       // validate
       Object.keys(args).forEach(function (key) {
         if (key === `fullname` || key === `phone`) {
-          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+          if (!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
         }
       })
 
@@ -357,14 +374,14 @@ const resolvers = {
         // validate
         Object.keys(args).forEach(function (key) {
           if (key !== `paid`) {
-            if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+            if (!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
           }
         })
 
-        const patientCount = await Patient.countDocuments({_id: args.patientId})
+        const patientCount = await Patient.countDocuments({ _id: args.patientId })
         if (patientCount === 0) throw new ApolloError('Patient does not exist', 400)
 
-        const doctorCount = await Doctor.countDocuments({_id: args.doctorId})
+        const doctorCount = await Doctor.countDocuments({ _id: args.doctorId })
         if (doctorCount === 0) throw new ApolloError('Doctor does not exist', 400)
 
         args._id = mongoose.Types.ObjectId()
@@ -379,7 +396,7 @@ const resolvers = {
       // validate
       Object.keys(args).forEach(function (key) {
         if (key !== `paid`) {
-          if(!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
+          if (!checkTruthy(args[key])) throw new ApolloError(`${key} is null or contain whitespace`, 400)
         }
       })
 

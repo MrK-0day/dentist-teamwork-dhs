@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 // const jwt = require('jsonwebtoken')
 
 // const MONGO_URL = process.env['MONGO_URL'] || 'localhost:27017'
-const MONGO_URL = process.env['MONGO_URL'] || 'DbAdmin:a123456@ds139884.mlab.com:39884/dentist'
+const MONGO_URL = process.env['MONGO_URL'] || `DbAdmin:a123456@ds139884.mlab.com:39884/dentist`
 const PORT = process.env['PORT'] || 4000
 
 mongoose.set('debug', true)
@@ -25,6 +25,9 @@ const server = new ApolloServer({
     settings: {
       'editor.cursorShape': 'line'
     }
+  },
+  formatError: error => {
+    return { message: error.message, httpCode: error.extensions.code }
   }
   // context: async (root) => {
   //   // console.log(root)
@@ -50,5 +53,5 @@ const httpServer = createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
 httpServer.listen({ port: PORT }, () => {
-  console.log(`🚀 Server ready at http://0.0.0.0:${PORT}${server.graphqlPath}`)
+  console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
 })

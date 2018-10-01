@@ -1,5 +1,5 @@
 import { Client } from '../apollo/apollo'
-import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_removeRecord } from '../apollo/gql'
+import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_removeRecord, GQL_getRecordById, GQl_editRecord } from '../apollo/gql'
 const moment = require('moment')
 
 export const Home = {
@@ -99,7 +99,7 @@ export const Patient = {
   },
   effects: (dispatch: any) =>({
     async asyncInitData (payload: any,rootState: any) {
-      let res: any =await Client()
+      let res: any = await Client()
         .query(
           {
             query: GQL_getPatient
@@ -174,7 +174,10 @@ export const MedialRecord = {
     listtooth: [],
     notecount: -1,
     notetext: '',
-    listdatarecord: []
+    listdatarecord: [],
+    visibleedit: false,
+    _idedit: '',
+    no: ''
   },
   reducers: {
     setState (state: any, key: any, value: any) {
@@ -316,7 +319,62 @@ export const MedialRecord = {
       dispatch.MedialRecord.setState('listdatarecord', data)
     },
     async editMedialRecord (payload: any, rootState: any) {
-      console.log(payload)
+      let { data: { record: res } }: { data: any } = await Client().query({
+        variables: {
+          _id: payload
+        },
+        query: GQL_getRecordById
+      })
+      dispatch.MedialRecord.setState('cost', res.cost)
+      dispatch.MedialRecord.setState('paid', res.paid)
+      dispatch.MedialRecord.setState('fullname', res.patientId)
+      dispatch.MedialRecord.setState('mahoso', res.recordNumber)
+      dispatch.MedialRecord.setState('listtooth', JSON.parse(res.teeth))
+      dispatch.MedialRecord.setState('date', moment())
+      dispatch.MedialRecord.setState('visibleedit', true)
+
+      dispatch.MedialRecord.setState('_idedit', res._id)
+      dispatch.MedialRecord.setState('no', res.no)
+    },
+    async onCloseModalEdit (payload: any, rootState: any) {
+      if (payload === 'EDIT') {
+        let { data: { updateRecord: res } }: { data: any } = await Client().mutate({
+          variables: {
+            _id: rootState.MedialRecord._idedit,
+            patientId: rootState.MedialRecord.fullname,
+            recordNumber: rootState.MedialRecord.mahoso,
+            cost: rootState.MedialRecord.cost,
+            no: rootState.MedialRecord.no + '',
+            teeth: JSON.stringify(rootState.MedialRecord.listtooth),
+            paid: rootState.MedialRecord.paid,
+            createdDate: 123456,
+            treatment: '{}',
+            doctorId: '5badf119883e91274201b543'
+          },
+          mutation: GQl_editRecord
+        })
+        let data = [...rootState.MedialRecord.listdatarecord]
+        for (let i in data) {
+          if (data[i].key === res._id) {
+            data[i].cost = res.cost
+            data[i].paid = res.paid
+            data[i].no = res.no
+            data[i].patient = res.patient.fullname
+            data[i].recordnumber = res.recordNumber
+            break
+          }
+        }
+        dispatch.MedialRecord.setState('listdatarecord', data)
+        console.log(rootState.MedialRecord.listdatarecord)
+      }
+      dispatch.MedialRecord.setState('cost', '0')
+      dispatch.MedialRecord.setState('paid', '0')
+      dispatch.MedialRecord.setState('fullname', '')
+      dispatch.MedialRecord.setState('mahoso', '')
+      dispatch.MedialRecord.setState('listtooth', [])
+      dispatch.MedialRecord.setState('date', moment())
+      dispatch.MedialRecord.setState('visibleedit', false)
+      dispatch.MedialRecord.setState('no', '')
     }
   })
 }

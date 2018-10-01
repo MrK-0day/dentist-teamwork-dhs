@@ -61,7 +61,7 @@ const typeDefs = gql`
     _id:            ID
     patientId:      String
     recordNumber:   String
-    no:             Int
+    no:             String
     teeth:          String
     cost:           String
     paid:           String

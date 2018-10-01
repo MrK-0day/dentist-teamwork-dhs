@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "@rematch/core": "^1.0.0-beta.4",
+    "ag-grid-community": "^19.0.0",
+    "ag-grid-react": "^19.0.0",
     "antd": "^3.9.2",
     "apollo-boost": "^0.1.16",
     "apollo-link-context": "^1.0.9",

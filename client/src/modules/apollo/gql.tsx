@@ -29,6 +29,30 @@ export const GQL_removeRecord = gql`
   }
 `
 
+export const GQL_getRecordById = gql`
+  query getrecordbyid ($_id: ID!) {
+    record (_id: $_id) {
+      _id patientId recordNumber no
+      teeth cost paid createdDate
+      treatment doctorId isEnabled
+      patient {
+        fullname
+      }
+    }
+  }
+`
+
+export const GQl_editRecord = gql`
+  mutation updateRecord($_id: ID!, $patientId: String!, $recordNumber: String!, $cost: String!, $no: String!, $teeth: String!, $paid: String, $createdDate: Int!, $treatment: String!, $doctorId: String!) {
+    updateRecord (_id: $_id, patientId: $patientId, recordNumber: $recordNumber, cost: $cost, no: $no, teeth: $teeth, paid: $paid, createdDate: $createdDate, treatment: $treatment, doctorId: $doctorId) {
+      _id no recordNumber treatment cost paid patientId
+      patient {
+        fullname
+      }
+    }
+  }
+`
+
 export const GQL_getPatient = gql`
   {
     getPatients{

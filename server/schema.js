@@ -205,9 +205,7 @@ const resolvers = {
     // FIXME: Login
     signIn: (root, args) => {
       async function findUser (username, password) {
-        console.log(password)
         let encryptedPassword = SHA256(password).toString()
-        console.log(encryptedPassword)
         const result = await Doctor.findOne({ username, password: encryptedPassword })
         if (!result) throw new ApolloError(`Wrong username or password`, 400)
         return result

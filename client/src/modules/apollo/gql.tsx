@@ -53,6 +53,26 @@ export const GQl_editRecord = gql`
   }
 `
 
+export const GQL_getSchedules = gql`
+  {
+    getSchedules {
+      _id timestamp content
+      doctor {
+        _id fullname
+      }
+      patient {
+        _id fullname
+      }
+      room {
+        _id code name
+      }
+      step {
+        _id
+      }
+    }
+  }
+`
+
 export const GQL_getPatient = gql`
   {
     getPatients{

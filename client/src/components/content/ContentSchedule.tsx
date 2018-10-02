@@ -4,6 +4,9 @@ import { connect } from 'react-redux'
 import { TableSchedule } from '../ag-grid/TableSchedule'
 
 class ContentSchedule extends React.Component<any, any> {
+  componentDidMount () {
+    this.props.InitData()
+  }
   render () {
     return (
       <TableSchedule props={this.props} />

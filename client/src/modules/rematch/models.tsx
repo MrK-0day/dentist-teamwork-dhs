@@ -1,5 +1,5 @@
 import { Client } from '../apollo/apollo'
-import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord } from '../apollo/gql'
+import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_getSchedules } from '../apollo/gql'
 const moment = require('moment')
 
 export const Login = {
@@ -355,5 +355,11 @@ export const Schedule = {
     }
   },
   effects: (dispatch: any) => ({
+    async InitData (payload: any, rootState: any) {
+      let res: any = await Client().query({
+        query: GQL_getSchedules
+      })
+      console.log(res.data.getSchedules)
+    }
   })
 }

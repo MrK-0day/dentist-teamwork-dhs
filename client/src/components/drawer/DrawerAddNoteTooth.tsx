@@ -2,10 +2,6 @@ import * as React from 'react'
 import { Drawer, Form, Input, Button } from 'antd'
 
 export const DrawerAddNoteTooth = ({ props }: { props: any }) => {
-  const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 24 - 6 }
-  }
   function handleChange (e: any) {
     props.setState(e.target.name, e.target.value)
   }

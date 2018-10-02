@@ -1,18 +1,28 @@
 import * as React from 'react'
 import { AgGridReact } from 'ag-grid-react'
 
-const CL = [
+import noEditor from '../ag-grid/child/noEditor'
+import recordNumberEditor from '../ag-grid/child/recordNumberEditor'
+import costEditor from '../ag-grid/child/costEditor'
+import paidEditor from '../ag-grid/child/paidEditor'
+import actionRenderer from '../ag-grid/child/actionRenderer'
+
+const CL: any[] = [
   {
     headerName: 'Bệnh Nhân',
-    field: 'patient',
+    field: 'fullname',
   },
   {
     headerName: 'Số Lần Khám',
-    field: 'no'
+    field: 'no',
+    editable: true,
+    cellEditor: 'noEditor'
   },
   {
     headerName: 'Mã Bệnh Án',
-    field: 'recordnumber'
+    field: 'recordNumber',
+    editable: true,
+    cellEditor: 'recordNumberEditor'
   },
   {
     headerName: 'Giai Đoạn',
@@ -20,29 +30,34 @@ const CL = [
   },
   {
     headerName: 'Tổng Tiền',
-    field: 'cost'
+    field: 'cost',
+    editable: true,
+    cellEditor: 'costEditor'
   },
   {
     headerName: 'Đã Thanh Toán',
-    field: 'paid'
+    field: 'paid',
+    editable: true,
+    cellEditor: 'paidEditor'
+  },
+  {
+    headerName: 'Thao Tác',
+    field: 'action',
+    cellRenderer: 'actionRenderer'
   }
 ]
 
-const DT = [
-  {
-    patient: 'Phan Quốc Tuấn',
-    no: '0',
-    recordnumber: 'RHM0001',
-    step: '0',
-    cost: '10.000.000',
-    paid: '5.000.000'
-  }
-]
+const frameworkComponents: any = {
+  noEditor, recordNumberEditor, costEditor, paidEditor, actionRenderer
+}
 
 export const TableRecord = ({ props }: { props: any }) => {
+  function onGridReady (params: any) {
+    params.api.sizeColumnsToFit()
+  }
   return (
-    <div style={{ height: '90vh' }} className='ag-theme-balham'>
-      <AgGridReact enableSorting={true} enableFilter={true} columnDefs={CL} rowData={DT} />
+    <div style={{ height: '93vh' }} className='ag-theme-balham'>
+      <AgGridReact rowSelection='single' enableSorting={true} enableFilter={true} columnDefs={CL} rowData={props.listdatarecord} onGridReady={onGridReady} frameworkComponents={frameworkComponents} />
     </div>
   )
 }

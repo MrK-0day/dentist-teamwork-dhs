@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 export const GQL_getRecords = gql`
   {
     getRecords {
-      _id recordNumber no cost paid
+      _id recordNumber no cost paid teeth createdDate
       patient {
         _id fullname
       }
@@ -13,7 +13,7 @@ export const GQL_getRecords = gql`
 export const GQL_addRecord = gql`
   mutation addRecord($patientId: String!, $recordNumber: String!, $cost: String!, $teeth: String!, $paid: String, $createdDate: Int!, $treatment: String!, $doctorId: String!) {
     addRecord (patientId: $patientId, recordNumber: $recordNumber, cost: $cost, teeth: $teeth, paid: $paid, createdDate: $createdDate, treatment: $treatment, doctorId: $doctorId) {
-      _id recordNumber no cost paid
+      _id recordNumber no cost paid teeth createdDate
       patient {
         _id fullname
       }
@@ -45,7 +45,7 @@ export const GQL_getRecordById = gql`
 export const GQl_editRecord = gql`
   mutation updateRecord($_id: ID!, $patientId: String!, $recordNumber: String!, $cost: String!, $no: String!, $teeth: String!, $paid: String, $createdDate: Int!, $treatment: String!, $doctorId: String!) {
     updateRecord (_id: $_id, patientId: $patientId, recordNumber: $recordNumber, cost: $cost, no: $no, teeth: $teeth, paid: $paid, createdDate: $createdDate, treatment: $treatment, doctorId: $doctorId) {
-      _id no recordNumber treatment cost paid patientId
+      _id no recordNumber treatment cost paid patientId createdDate
       patient {
         fullname
       }

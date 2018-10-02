@@ -10,13 +10,18 @@ import '../css/theme.css'
 
 // Import Screen
 import Home from './home/Home'
+import Login from './login/Login'
 
 class Router extends React.Component<any, any> {
   render () {
     return (
       <BrowserRouter>
         <Switch>
-          <Route exact path='/' render={() => <Home />} />
+          <Route exact path='/' render={() => {
+            let token = localStorage.getItem('TOKEN') === null
+            if (token) return <Login />
+            else return <Home />
+          }} />
         </Switch>
       </BrowserRouter>
     )

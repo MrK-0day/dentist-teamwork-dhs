@@ -2,10 +2,8 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Button, Input, Row, Col } from 'antd'
 
-import { TableMedicalRecord } from '../table/TableMedicalRecord'
 import { TableRecord } from '../ag-grid/TableRecord'
 import { ModalMedialRecord } from '../modal/ModalMedialRecord'
-import { ModalEditMedialRecord } from '../modal/ModalEditMedialRecord'
 
 class ContentMedialRecord extends React.Component<any, any> {
   componentDidMount () {
@@ -25,10 +23,8 @@ class ContentMedialRecord extends React.Component<any, any> {
             <Col span={4}><Button block onClick={this.OpenModalTaoHoSoBenhAn.bind(this)} icon='plus' type='primary'>Tạo Hồ Sơ Bệnh Án</Button></Col>
           </Row>
         </div>
-        {/* <TableMedicalRecord props={this.props} /> */}
         <TableRecord props={this.props} />
         <ModalMedialRecord props={this.props} />
-        <ModalEditMedialRecord props={this.props} />
       </div>
     )
   }

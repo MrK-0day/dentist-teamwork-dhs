@@ -4,6 +4,7 @@ import { Layout, Menu, Icon } from 'antd'
 import ContentDashboard from '../content/ContentDashboard'
 import ContentPatient from '../content/ContentPatient'
 import ContentMedialRecord from '../content/ContentMedialRecord'
+import ContentSchedule from '../content/ContentSchedule'
 
 const _ListMenuItem = [
   {
@@ -55,6 +56,7 @@ export const SiderNav = ({ props: { isCollapsed, onCollapsed, setState }, props 
         {props.isSelectMenuItem === 'dashboard' && <ContentDashboard />}
         {props.isSelectMenuItem === 'quanlybenhnhan' && <ContentPatient />}
         {props.isSelectMenuItem === 'quanlybenhan' && <ContentMedialRecord />}
+        {props.isSelectMenuItem === 'quanlylichkham' && <ContentSchedule />}
       </Layout>
     </Layout>
   )

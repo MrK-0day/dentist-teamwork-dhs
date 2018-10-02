@@ -1,6 +1,27 @@
 import { Client } from '../apollo/apollo'
-import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_removeRecord, GQL_getRecordById, GQl_editRecord } from '../apollo/gql'
+import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord } from '../apollo/gql'
 const moment = require('moment')
+
+export const Login = {
+  state: {
+    username: '',
+    password: ''
+  },
+  reducers: {
+    setState(state: any, key: any, value: any) {
+      return {
+        ...state,
+        [key]: value
+      }
+    }
+  },
+  effects: (dispatch: any) => ({
+    async onLogin (payload: any, rootState: any) {
+      localStorage.setItem('TOKEN', 'cc')
+      payload.push('/')
+    }
+  })
+}
 
 export const Home = {
   state: {
@@ -174,10 +195,7 @@ export const MedialRecord = {
     listtooth: [],
     notecount: -1,
     notetext: '',
-    listdatarecord: [],
-    visibleedit: false,
-    _idedit: '',
-    no: ''
+    listdatarecord: []
   },
   reducers: {
     setState (state: any, key: any, value: any) {
@@ -202,7 +220,7 @@ export const MedialRecord = {
       }
     },
     onCloseModalAdd (state: any, payload: any) {
-      if (payload === 'OK') {
+      if (payload === 'CANCEL') {
         return {
           ...state,
           visible: false
@@ -243,6 +261,13 @@ export const MedialRecord = {
         notetext: '',
         listtooth: log
       }
+    },
+    onremoveRecord (state: any, payload: any) {
+      let log = [...state.listdatarecord].filter((value: any) => value.key !== payload)
+      return {
+        ...state,
+        listdatarecord: log
+      }
     }
   },
   effects: (dispatch: any) => ({
@@ -280,13 +305,15 @@ export const MedialRecord = {
       let data1: any[] = [...rootState.MedialRecord.listdatarecord]
       data1.push({
         key: log._id,
-        action: log._id,
-        patient: log.patient.fullname,
+        fullname: log.patient.fullname,
+        userid: log.patient._id,
         no: log.no,
-        recordnumber: log.recordNumber,
+        recordNumber: log.recordNumber,
         step: '0',
         cost: log.cost,
-        paid: log.paid
+        paid: log.paid,
+        teeth: log.teeth,
+        createdDate: log.createdDate
       })
       dispatch.MedialRecord.setState('listdatarecord', data1)
       return true
@@ -299,82 +326,34 @@ export const MedialRecord = {
       let data: any[] = log.map((value: any) => {
         return {
           key: value._id,
-          action: value._id,
-          patient: value.patient.fullname,
+          fullname: value.patient.fullname,
+          userid: value.patient._id,
           no: value.no,
-          recordnumber: value.recordNumber,
+          recordNumber: value.recordNumber,
           step: '0',
           cost: value.cost,
-          paid: value.paid
+          paid: value.paid,
+          teeth: value.teeth,
+          createdDate: value.createdDate
         }
       }) 
       dispatch.MedialRecord.setState('listdatarecord', data)
-    },
-    async RemoveMedialRecord (payload: any, rootState: any) {
-      Client().mutate({
-        variables: { _id: payload },
-        mutation: GQL_removeRecord
-      })
-      let data = [...rootState.MedialRecord.listdatarecord].filter((value: any) => value.key !== payload)
-      dispatch.MedialRecord.setState('listdatarecord', data)
-    },
-    async editMedialRecord (payload: any, rootState: any) {
-      let { data: { record: res } }: { data: any } = await Client().query({
-        variables: {
-          _id: payload
-        },
-        query: GQL_getRecordById
-      })
-      dispatch.MedialRecord.setState('cost', res.cost)
-      dispatch.MedialRecord.setState('paid', res.paid)
-      dispatch.MedialRecord.setState('fullname', res.patientId)
-      dispatch.MedialRecord.setState('mahoso', res.recordNumber)
-      dispatch.MedialRecord.setState('listtooth', JSON.parse(res.teeth))
-      dispatch.MedialRecord.setState('date', moment())
-      dispatch.MedialRecord.setState('visibleedit', true)
-
-      dispatch.MedialRecord.setState('_idedit', res._id)
-      dispatch.MedialRecord.setState('no', res.no)
-    },
-    async onCloseModalEdit (payload: any, rootState: any) {
-      if (payload === 'EDIT') {
-        let { data: { updateRecord: res } }: { data: any } = await Client().mutate({
-          variables: {
-            _id: rootState.MedialRecord._idedit,
-            patientId: rootState.MedialRecord.fullname,
-            recordNumber: rootState.MedialRecord.mahoso,
-            cost: rootState.MedialRecord.cost,
-            no: rootState.MedialRecord.no + '',
-            teeth: JSON.stringify(rootState.MedialRecord.listtooth),
-            paid: rootState.MedialRecord.paid,
-            createdDate: 123456,
-            treatment: '{}',
-            doctorId: '5badf119883e91274201b543'
-          },
-          mutation: GQl_editRecord
-        })
-        let data = [...rootState.MedialRecord.listdatarecord]
-        for (let i in data) {
-          if (data[i].key === res._id) {
-            data[i].cost = res.cost
-            data[i].paid = res.paid
-            data[i].no = res.no
-            data[i].patient = res.patient.fullname
-            data[i].recordnumber = res.recordNumber
-            break
-          }
-        }
-        dispatch.MedialRecord.setState('listdatarecord', data)
-        console.log(rootState.MedialRecord.listdatarecord)
-      }
-      dispatch.MedialRecord.setState('cost', '0')
-      dispatch.MedialRecord.setState('paid', '0')
-      dispatch.MedialRecord.setState('fullname', '')
-      dispatch.MedialRecord.setState('mahoso', '')
-      dispatch.MedialRecord.setState('listtooth', [])
-      dispatch.MedialRecord.setState('date', moment())
-      dispatch.MedialRecord.setState('visibleedit', false)
-      dispatch.MedialRecord.setState('no', '')
     }
+  })
+}
+
+export const Schedule = {
+  state: {
+    listSchedule: []
+  },
+  reducers: {
+    setState(state: any, key: any, value: any) {
+      return {
+        ...state,
+        [key]: value
+      }
+    }
+  },
+  effects: (dispatch: any) => ({
   })
 }

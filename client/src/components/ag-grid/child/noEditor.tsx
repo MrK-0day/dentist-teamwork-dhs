@@ -42,7 +42,7 @@ class noEditor extends React.Component<any, any> {
         patientId: payload.userid,
         recordNumber: payload.recordNumber,
         cost: payload.cost,
-        no: payload.no,
+        no: +payload.no,
         paid: payload.paid,
         teeth: payload.teeth,
         treatment: '{}',

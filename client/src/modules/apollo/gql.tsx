@@ -43,7 +43,7 @@ export const GQL_getRecordById = gql`
 `
 
 export const GQl_editRecord = gql`
-  mutation updateRecord($_id: ID!, $patientId: String!, $recordNumber: String!, $cost: String!, $no: String!, $teeth: String!, $paid: String, $createdDate: Int!, $treatment: String!, $doctorId: String!) {
+  mutation updateRecord($_id: ID!, $patientId: String!, $recordNumber: String!, $cost: String!, $no: Int!, $teeth: String!, $paid: String, $createdDate: Int!, $treatment: String!, $doctorId: String!) {
     updateRecord (_id: $_id, patientId: $patientId, recordNumber: $recordNumber, cost: $cost, no: $no, teeth: $teeth, paid: $paid, createdDate: $createdDate, treatment: $treatment, doctorId: $doctorId) {
       _id no recordNumber treatment cost paid patientId createdDate
       patient {

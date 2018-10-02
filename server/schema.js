@@ -13,15 +13,17 @@ const Record = require('./models/Record')
 const Room = require('./models/Room')
 const Schedule = require('./models/Schedule')
 const Step = require('./models/Step')
-const Treatment = require('./models/Treatment')
+const TreatmentRegimen = require('./models/TreatmentRegimen')
+const TreatmentStep = require('./models/TreatmentStep')
 
 const checkTruthy = (value) => value || false
 
 const typeDefs = gql`
   type Disease {
-    _id:            ID
-    name:           String
-    isEnabled:      Boolean
+    _id:                ID
+    name:               String
+    isEnabled:          Boolean
+    treatmentRegimens:  [TreatmentRegimen]
   }
   type Doctor {
     _id:            ID
@@ -61,7 +63,7 @@ const typeDefs = gql`
     _id:            ID
     patientId:      String
     recordNumber:   String
-    no:             String
+    no:             Int
     teeth:          String
     cost:           String
     paid:           String
@@ -105,31 +107,41 @@ const typeDefs = gql`
     record:         Record
     schedules:      [Schedule]
   }
-  type Treatment {
+  type TreatmentRegimen {
     _id:            ID
     diseaseId:      String
     content:        String
     isEnabled:      Boolean
     disease:        Disease
+    treatmentSteps: [TreatmentStep]
+  }
+  type TreatmentStep {
+    _id:                ID
+    treatmentRegimenId: String
+    content:            String
+    isEnabled:          String
+    treatmentRegimen:   TreatmentRegimen
   }
 
   type Query {
-    disease(_id: ID!):    Disease
-    getDiseases:       [Disease]
-    doctor(_id: ID!):     Doctor
-    getDoctors:          [Doctor]
-    patient(_id: ID!):    Patient
-    getPatients:         [Patient]
-    record(_id: ID!):     Record
-    getRecords:          [Record]
-    room(_id: ID!):       Room
-    getRooms:            [Room]
-    schedule(_id: ID!):   Schedule
-    getSchedules:        [Schedule]
-    step(_id: ID!):       Step
-    getSteps:            [Step]
-    treatment(_id: ID!):  Treatment
-    getTreatments:     [Treatment]
+    disease(_id: ID!):           Disease
+    getDiseases:                [Disease]
+    doctor(_id: ID!):            Doctor
+    getDoctors:                 [Doctor]
+    patient(_id: ID!):           Patient
+    getPatients:                [Patient]
+    record(_id: ID!):            Record
+    getRecords:                 [Record]
+    room(_id: ID!):              Room
+    getRooms:                   [Room]
+    schedule(_id: ID!):          Schedule
+    getSchedules:               [Schedule]
+    step(_id: ID!):              Step
+    getSteps:                   [Step]
+    treatmentRegimen(_id: ID!):  TreatmentRegimen
+    getTreatmentRegimens:       [TreatmentRegimen]
+    treatmentStep(_id: ID!):     TreatmentStep
+    getTreatmentSteps:          [TreatmentStep]
 
     # Login
     signIn(username: String!, password: String!): Doctor
@@ -159,7 +171,7 @@ const typeDefs = gql`
 
     # Record
     addRecord(patientId: String!, recordNumber: String!, cost: String!, teeth: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
-    updateRecord(_id: ID!, patientId: String!, recordNumber: String!, cost: String! no: String!, teeth: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
+    updateRecord(_id: ID!, patientId: String!, recordNumber: String!, cost: String! no: Int!, teeth: String!, paid: String, createdDate: Int!, treatment: String!, doctorId: String!): Record
     removeRecord(_id: ID!): Record
 
     # Room
@@ -177,31 +189,39 @@ const typeDefs = gql`
     updateStep(_id: ID!, recordId: String!, code: String!, name: String!, content: String, state: Int!): Step
     removeStep(_id: ID!): Step
 
-    #Treatment
-    addTreatment(diseaseId: String!, content: String!): Treatment
-    updateTreatment(_id: ID!, diseaseId: String!, content: String!): Treatment
-    removeTreatment(_id: ID!): Treatment
+    #TreatmentRegimen
+    addTreatmentRegimen(diseaseId: String!, content: String!): TreatmentRegimen
+    updateTreatmentRegimen(_id: ID!, diseaseId: String!, content: String!): TreatmentRegimen
+    removeTreatmentRegimen(_id: ID!): TreatmentRegimen
+
+    #TreatmentStep
+    addTreatmentStep(treatmentRegimenId: String!, content: String!): TreatmentRegimen
+    updateTreatmentStep(_id: ID!, treatmentRegimenId: String!, content: String!): TreatmentRegimen
+    removeTreatmentStep(_id: ID!): TreatmentRegimen
   }
 `
 
 const resolvers = {
   Query: {
-    disease:        (root, args, context, info) => Disease.findById(args._id),
-    getDiseases:    (root, args, context, info) => Disease.find({ isEnabled: true }),
-    doctor:         (root, args, context, info) => Doctor.findById(args._id),
-    getDoctors:     (root, args, context, info) => Doctor.find({ isEnabled: true }),
-    patient:        (root, args, context, info) => Patient.findById(args._id),
-    getPatients:    (root, args, context, info) => Patient.find({ isEnabled: true }),
-    record:         (root, args, context, info) => Record.findById(args._id),
-    getRecords:     (root, args, context, info) => Record.find({ isEnabled: true }),
-    room:           (root, args, context, info) => Room.findById(args._id),
-    getRooms:       (root, args, context, info) => Room.find({ isEnabled: true }),
-    schedule:       (root, args, context, info) => Schedule.findById(args._id),
-    getSchedules:   (root, args, context, info) => Schedule.find({ isEnabled: true }),
-    step:           (root, args, context, info) => Step.findById(args._id),
-    getSteps:       (root, args, context, info) => Step.find({ isEnabled: true }),
-    treatment:      (root, args, context, info) => Treatment.findById(args._id),
-    getTreatments:  (root, args, context, info) => Treatment.find({ isEnabled: true }),
+    disease:                (root, args, context, info) => Disease.findById(args._id),
+    getDiseases:            (root, args, context, info) => Disease.find({ isEnabled: true }),
+    doctor:                 (root, args, context, info) => Doctor.findById(args._id),
+    getDoctors:             (root, args, context, info) => Doctor.find({ isEnabled: true }),
+    patient:                (root, args, context, info) => Patient.findById(args._id),
+    getPatients:            (root, args, context, info) => Patient.find({ isEnabled: true }),
+    record:                 (root, args, context, info) => Record.findById(args._id),
+    getRecords:             (root, args, context, info) => Record.find({ isEnabled: true }),
+    room:                   (root, args, context, info) => Room.findById(args._id),
+    getRooms:               (root, args, context, info) => Room.find({ isEnabled: true }),
+    schedule:               (root, args, context, info) => Schedule.findById(args._id),
+    getSchedules:           (root, args, context, info) => Schedule.find({ isEnabled: true }),
+    step:                   (root, args, context, info) => Step.findById(args._id),
+    getSteps:               (root, args, context, info) => Step.find({ isEnabled: true }),
+    treatmentRegimen:       (root, args, context, info) => TreatmentRegimen.findById(args._id),
+    getTreatmentRegimens:   (root, args, context, info) => TreatmentRegimen.find({ isEnabled: true }),
+    treatmentStep:          (root, args, context, info) => TreatmentStep.findById(args._id),
+    getTreatmentSteps:      (root, args, context, info) => TreatmentStep.find({ isEnabled: true }),
+
     // FIXME: Login
     signIn: (root, args) => {
       async function findUser (username, password) {
@@ -211,6 +231,12 @@ const resolvers = {
         return result
       }
       return findUser(args.username, args.password)
+    }
+  },
+
+  Disease: {
+    treatmentRegimens (disease) {
+      return TreatmentRegimen.find({ diseaseId: disease._id, isEnabled: true })
     }
   },
 
@@ -271,9 +297,18 @@ const resolvers = {
     }
   },
 
-  Treatment: {
-    disease (treatment) {
-      return Disease.findById(treatment.diseaseId)
+  TreatmentRegimen: {
+    disease (treatmentRegimen) {
+      return Disease.findById(treatmentRegimen.diseaseId)
+    },
+    treatmentSteps (treatmentRegimen) {
+      return TreatmentStep.find({ treatmentRegimenId: treatmentRegimen._id, isEnabled: true })
+    }
+  },
+
+  TreatmentStep: {
+    treatmentRegimen (treatmentStep) {
+      return TreatmentRegimen.findById(treatmentStep.treatmentRegimenId)
     }
   },
 
@@ -433,15 +468,25 @@ const resolvers = {
     updateStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, args),
     removeStep: (root, args) => Step.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
 
-    // FIXME: TREATMENT
-    addTreatment: (root, args) => {
+    // FIXME: TREATMENT REGIMEN
+    addTreatmentRegimen: (root, args) => {
       args._id = mongoose.Types.ObjectId()
       args.isEnabled = true
-      let newTreatment = new Treatment(args)
-      return newTreatment.save()
+      let newTreatmentRegimen = new TreatmentRegimen(args)
+      return newTreatmentRegimen.save()
     },
-    updateTreatment: (root, args) => Treatment.findOneAndUpdate({ _id: args._id }, args),
-    removeTreatment: (root, args) => Treatment.findOneAndUpdate({ _id: args._id }, { isEnabled: false })
+    updateTreatmentRegimen: (root, args) => TreatmentRegimen.findOneAndUpdate({ _id: args._id }, args),
+    removeTreatmentRegimen: (root, args) => TreatmentRegimen.findOneAndUpdate({ _id: args._id }, { isEnabled: false }),
+
+    // FIXME: TREATMENT STEP
+    addTreatmentStep: (root, args) => {
+      args._id = mongoose.Types.ObjectId()
+      args.isEnabled = true
+      let newTreatmentStep = new TreatmentStep(args)
+      return newTreatmentStep.save()
+    },
+    updateTreatmentStep: (root, args) => TreatmentStep.findOneAndUpdate({ _id: args._id }, args),
+    removeTreatmentStep: (root, args) => TreatmentStep.findOneAndUpdate({ _id: args._id }, { isEnabled: false })
   }
 }
 

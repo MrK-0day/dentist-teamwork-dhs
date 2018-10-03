@@ -76,7 +76,7 @@ export const GQL_getSchedules = gql`
 export const GQL_getPatient = gql`
   {
     getPatients{
-      _id fullname gender dob career address phone nationality email refBy
+      _id fullname gender dob career address phone nationality email refBy isEnabled
     }
   }
 `
@@ -90,9 +90,9 @@ export const GQL_addPatient = gql`
 `
 
 export const GQL_deletePatient = gql`
-  mutation removePatient ($id: ID!) {
-    removePatient(_id:$id){
-      fullname
+  mutation removePatient ($_id: ID!) {
+    removePatient(_id:$_id){
+      _id fullname gender dob career address phone nationality email refBy
     }
   }
 `

@@ -18,9 +18,10 @@ class Router extends React.Component<any, any> {
       <BrowserRouter>
         <Switch>
           <Route exact path='/' render={() => {
-            let token = localStorage.getItem('TOKEN') === null
-            if (token) return <Login />
-            else return <Home />
+            // let token = localStorage.getItem('TOKEN') === null
+            // if (token) return <Login />
+            // else return <Home />
+            return <Home />
           }} />
         </Switch>
       </BrowserRouter>

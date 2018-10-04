@@ -1,5 +1,5 @@
 import { Client } from '../apollo/apollo'
-import { GQL_getPatient, GQL_addPatient, GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_getSchedules } from '../apollo/gql'
+import { GQL_getPatient, GQL_addPatient, GQL_UpdatePatient ,GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_getSchedules } from '../apollo/gql'
 const moment = require('moment')
 
 export const Login = {

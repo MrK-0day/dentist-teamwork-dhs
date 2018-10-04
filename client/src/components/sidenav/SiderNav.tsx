@@ -5,6 +5,7 @@ import ContentDashboard from '../content/ContentDashboard'
 import ContentPatient from '../content/ContentPatient'
 import ContentMedialRecord from '../content/ContentMedialRecord'
 import ContentSchedule from '../content/ContentSchedule'
+import ContentDoctor from '../content/ContentDoctor'
 
 const _ListMenuItem = [
   {
@@ -31,7 +32,12 @@ const _ListMenuItem = [
     key: 'baocao',
     text: 'Báo Cáo',
     icon: 'schedule'
-  }
+  },
+  {
+    key:'quanlybacsi',
+    text: 'Bac Si',
+    icon: 'user'
+  }	
 ]
 
 export const SiderNav = ({ props: { isCollapsed, onCollapsed, setState }, props } : { props: any }) => {
@@ -57,6 +63,7 @@ export const SiderNav = ({ props: { isCollapsed, onCollapsed, setState }, props 
         {props.isSelectMenuItem === 'quanlybenhnhan' && <ContentPatient />}
         {props.isSelectMenuItem === 'quanlybenhan' && <ContentMedialRecord />}
         {props.isSelectMenuItem === 'quanlylichkham' && <ContentSchedule />}
+        {props.isSelectMenuItem === 'quanlybacsi'&& <ContentDoctor />}
       </Layout>
     </Layout>
   )

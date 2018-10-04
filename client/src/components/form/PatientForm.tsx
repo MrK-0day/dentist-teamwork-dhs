@@ -63,9 +63,15 @@ class PatientForm extends React.Component<any, any> {
     })}
     </Select>
 
-    const countrySelector = <Select  onSelect={this.handleCountrySelect.bind(this)} placeholder='Select country'>
+    const countrySelector = <Select onSelect={this.handleCountrySelect.bind(this)} placeholder='Select country'>
     {countries.map((value: any, index: any)=>{
         return <Option key={index}>{value.name}</Option>
+    })}
+    </Select>
+
+    const jobSelector = <Select onSelect={this.handleJobSelect.bind(this)}placeholder='Choose your job'>
+    {jobLists.map((value: any, index: any)=>{
+        return <Option key={index}>{value}</Option>
     })}
     </Select>
 
@@ -85,20 +91,20 @@ class PatientForm extends React.Component<any, any> {
           <DatePicker onChange={this.handleDateChange.bind(this)} defaultValue={moment()} format={DateFormat} style={{width: '100%'}}/>
         </FormItem>
         <FormItem {...formItemLayout} label='E-mail'>
-          <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} defaultValue={this.props.email} value={this.props.email}/>
+          <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} value={this.props.email}/>
         </FormItem>
         <FormItem {...formItemLayout} label='Phone'>
-          <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} addonBefore={prefixSelector} style={{ width: '100%' }} defaultValue={this.props.phone} value={this.props.phone} />
-        </FormItem>
+          <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} addonBefore={prefixSelector} style={{ width: '100%' }} value={this.props.phone} />
+        </FormItem>r
         <FormItem {...formItemLayout} label='Address'>
-          <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.phone} value={this.props.address}/>
+          <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' value={this.props.address}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='Nationality'>{countrySelector}</FormItem>
-        <FormItem {...formItemLayout} label='Career'>
-          <Input id='career' placeholder='Your current job' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
-        </FormItem>
+        <Row>
+          <Col span={12}><FormItem {...formItemLayout} style={{width: 300, alignSelf:'center'}}>{countrySelector}</FormItem></Col>
+          <Col span={12}><FormItem {...formItemLayout} style={{width: 300,  alignSelf:'center'}}>{jobSelector}</FormItem></Col>
+        </Row>
         <FormItem {...formItemLayout} label='Referer'>
-          <Input id='refBy' onChange={this.handleChange.bind(this)} defaultValue={this.props.refBy} value={this.props.refBy}/>
+          <Input id='refBy' onChange={this.handleChange.bind(this)} value={this.props.refBy}/>
         </FormItem>
       </Form>
     )
@@ -106,10 +112,10 @@ class PatientForm extends React.Component<any, any> {
     const EditForm = (
       <Form layout='horizontal'>
         <FormItem {...formItemLayout} label='Name'>
-          <Input id='fullname' placeholder='Full Name' onChange={this.handleChange.bind(this)} defaultValue={this.props.fullname} value={this.props.fullname}/>
+          <Input id='fullname' placeholder='Full Name' onChange={this.handleChange.bind(this)} value={this.props.fullname}/>
         </FormItem>
         <FormItem {...formItemLayout} label='Gender'>
-          <RadioGroup onChange={this.handleRadioChange.bind(this)} defaultValue={this.props.gender} value={this.props.genderRadio}>
+          <RadioGroup onChange={this.handleRadioChange.bind(this)} value={this.props.genderRadio}>
             <Radio value={'male'}>Male</Radio>
             <Radio value={'female'}>Female</Radio>
             <Radio value={'other'}>Other</Radio>
@@ -127,10 +133,10 @@ class PatientForm extends React.Component<any, any> {
         <FormItem {...formItemLayout} label='Address'>
           <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' value={this.props.address}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='Nationality'>{countrySelector}</FormItem>
-        <FormItem {...formItemLayout} label='Career'>
-          <Input id='career' placeholder='Your current job' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
-        </FormItem>
+        <Row>
+          <Col span={12}><FormItem {...formItemLayout} style={{width: 300, alignSelf:'center'}}>{countrySelector}</FormItem></Col>
+          <Col span={12}><FormItem {...formItemLayout} style={{width: 300,  alignSelf:'center'}}>{jobSelector}</FormItem></Col>
+        </Row>
         <FormItem {...formItemLayout} label='Referer'>
           <Input id='refBy' onChange={this.handleChange.bind(this)} value={this.props.refBy}/>
         </FormItem>

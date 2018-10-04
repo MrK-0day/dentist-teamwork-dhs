@@ -7,14 +7,12 @@ export const TablePatient = ({ props }: { props: any }) => {
   function handleDelete(event: any) {
     console.log(props)
     console.log(event.target)
-    props.asyncDeletePatient(event.target.value)
-    props.asyncInitData()
-    message.success('Deleted')
+    props.setMyState('target',event.target.value)
+    props.openModal('delete')
   }
   function handleEdit(event: any) {
-    console.log(event.target)
-    props.asyncDeletePatient(event.target.value)
-    props.asyncInitData()
+    console.log(event.target.value)
+    props.asyncInitUpdatePatient(event.target.value)
   }
   const columns = [
     {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Row, Divider } from 'antd'
 
 import { BoxCard } from '../card/BoxCard'
-import { TableDashboard } from '../table/TableDashboard'
+import { TableDashboard } from '../ag-grid/TableDashboard'
 
 const _ListBoxCard = [
   {

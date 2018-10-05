@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { AgGridReact } from 'ag-grid-react'
 
-import noEditor from '../ag-grid/child/noEditor'
-import recordNumberEditor from '../ag-grid/child/recordNumberEditor'
-import costEditor from '../ag-grid/child/costEditor'
-import paidEditor from '../ag-grid/child/paidEditor'
-import actionRenderer from '../ag-grid/child/actionRenderer'
+import noEditor from '../ag-grid/Record/noEditor'
+import recordNumberEditor from '../ag-grid/Record/recordNumberEditor'
+import costEditor from '../ag-grid/Record/costEditor'
+import paidEditor from '../ag-grid/Record/paidEditor'
+import actionRenderer from '../ag-grid/Record/actionRenderer'
 
 const CL: any[] = [
   {

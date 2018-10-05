@@ -97,7 +97,7 @@ export const GQL_addPatient = gql`
   }
 `
 
-export const GQL_deletePatient = gql`
+export const GQL_removePatient = gql`
   mutation removePatient ($_id: ID!) {
     removePatient(_id:$_id){
       _id fullname gender dob career address phone nationality email refBy
@@ -109,6 +109,14 @@ export const GQL_updatePatient = gql`
   mutation updatePatient ($_id: ID!,$fullname: String!, $gender: String, $dob: String, $career: String, $address: String, $phone: String!, $nationality: String, $email: String, $refBy: String){
     updatePatient (_id: $_id,fullname: $fullname, gender: $gender, dob:$dob, career: $career, address: $address, phone: $phone, nationality: $nationality, email: $email, refBy: $refBy){
       _id fullname gender dob career address phone nationality email refBy
-    }  
+    }
   }
-` 
+`
+
+export const GQL_getDoctor = gql`
+  {
+    getDoctors{
+      _id fullname gender dob specialize address phone nationality email refBy username isEnabled
+    }
+  }
+`

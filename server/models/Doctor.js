@@ -6,7 +6,7 @@ const DoctorSchema = new Schema({
   username:       String, // !
   password:       String, // !
   fullname:       String, // !
-  specialize:     String,
+  specialize:     String, // !
   gender:         String,
   dob:            String,
   address:        String,

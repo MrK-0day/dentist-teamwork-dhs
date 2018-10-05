@@ -1,12 +1,14 @@
+  "use strict"
+require('dotenv').config()
 const { createServer } = require('http')
 const express = require('express')
+const { ApolloEngine } = require('apollo-engine')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
 const mongoose = require('mongoose')
 // const jwt = require('jsonwebtoken')
 
-// const MONGO_URL = process.env['MONGO_URL'] || 'localhost:27017'
-const MONGO_URL = process.env['MONGO_URL'] || `DbAdmin:a123456@ds139884.mlab.com:39884/dentist`
+const MONGO_URL = process.env['MONGO_URL'] || `localhost:27017`
 const PORT = process.env['PORT'] || 4000
 
 mongoose.set('debug', true)
@@ -21,6 +23,9 @@ const app = express()
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  tracing: true,
+  cacheControl: true,
+  engine: false,
   playground: {
     settings: {
       'editor.cursorShape': 'line'
@@ -49,9 +54,27 @@ const server = new ApolloServer({
 })
 server.applyMiddleware({ app })
 
+const engine = new ApolloEngine({
+  apiKey: process.env.SERVICE_KEYS
+})
+
+// Call engine.listen instead of app.listen(port)
+engine.listen({
+  port: PORT,
+  expressApp: app
+}, () => {
+  console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
+})
+
+engine.on('error', () => {
+  console.log("There was an error starting the server or Engine.")
+  // The app failed to start, we probably want to kill the server
+  process.exit(1)
+})
+
 const httpServer = createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
-httpServer.listen({ port: PORT }, () => {
-  console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
-})
+// httpServer.listen({ port: PORT }, () => {
+//   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
+// })

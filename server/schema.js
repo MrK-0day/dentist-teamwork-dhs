@@ -3,6 +3,7 @@ const { gql, ApolloError } = require('apollo-server-express')
 // const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const SHA256 = require('crypto-js/sha256')
+const DataLoader = require('dataloader')
 // const _ = require('lodash')
 
 // models

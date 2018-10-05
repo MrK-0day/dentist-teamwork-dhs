@@ -61,20 +61,20 @@ const engine = new ApolloEngine({
 const httpServer = createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
-// // Call engine.listen instead of app.listen(port)
-// engine.listen({
-//   port: PORT,
-//   httpServer: httpServer
-// }, () => {
-//   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
-// })
-
-// engine.on('error', () => {
-//   console.log("There was an error starting the server or Engine.")
-//   // The app failed to start, we probably want to kill the server
-//   process.exit(1)
-// })
-
-httpServer.listen({ port: PORT }, () => {
+// Call engine.listen instead of app.listen(port)
+engine.listen({
+  port: PORT,
+  httpServer: httpServer
+}, () => {
   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
 })
+
+engine.on('error', () => {
+  console.log("There was an error starting the server or Engine.")
+  // The app failed to start, we probably want to kill the server
+  process.exit(1)
+})
+
+// httpServer.listen({ port: PORT }, () => {
+//   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
+// })

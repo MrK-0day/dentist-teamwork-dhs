@@ -1,6 +1,6 @@
 import { Client } from '../apollo/apollo'
 import { DateFormat } from '../../components/misc/const'
-import { GQL_getPatient, GQL_getPatientById, GQL_addPatient  ,GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_getSchedules } from '../apollo/gql'
+import { GQL_getPatient, GQL_getPatientById, GQL_addPatient  ,GQL_removePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_getSchedules, GQL_getDoctor } from '../apollo/gql'
 
 const moment = require('moment')
 const momentDateString = moment().format(DateFormat).split('-')
@@ -207,7 +207,7 @@ export const Patient = {
           variables: {
             '_id': rootState.Patient.target
           },
-          mutation: GQL_deletePatient
+          mutation: GQL_removePatient
         }
       )
       console.log(res)
@@ -257,8 +257,60 @@ export const Patient = {
 }
 
 export const Doctor = {
-  state: {},
-  reducers: {}
+  state: {
+    targetModal: 'none',
+    target: '',
+    genderRadio: "male",
+    doctorData: [],
+    fullname: '',
+    gender: 'male',
+    dob: momentTimeStamp,
+    specialize: '',
+    address: '',
+    phone: '',
+    nationality: 'Viet Nam',
+    email: '',
+    refBy: ''
+  },
+  reducers: {
+    setMyState (state: any, key: any, value: any) {
+      return {
+        ...state,
+        [key]: value
+      }
+    }
+  },
+  effects: (dispatch: any) => ({
+    async asyncInitData (payload: any,rootState: any) {
+      let res: any =await Client()
+        .query(
+          {
+            query: GQL_getDoctor
+          }
+        )
+      console.log(res.data)
+      let newDoctorList = res.data.getDoctors.map((doctor: any)=>{
+        console.log(doctor.isEnabled)
+        if(doctor.isEnabled===true) {
+          return {
+            id: doctor._id,
+            fullname: doctor.fullname,
+            gender: doctor.gender,
+            dob: moment(doctor.dob*1000).format(DateFormat),
+            specialize: doctor.specialize,
+            address: doctor.address,
+            phone: doctor.phone,
+            nationality: doctor.nationality,
+            email: doctor.email,
+            refBy: doctor.refBy,
+            username: doctor.username
+          }
+        }
+      })
+      console.log(newDoctorList)
+      dispatch.Doctor.setMyState('doctorData',newDoctorList)
+    }
+  })
 }
 
 export const MedialRecord = {
@@ -416,7 +468,7 @@ export const MedialRecord = {
           teeth: value.teeth,
           createdDate: value.createdDate
         }
-      }) 
+      })
       dispatch.MedialRecord.setState('listdatarecord', data)
     }
   })

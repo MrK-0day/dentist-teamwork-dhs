@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { AgGridReact } from 'ag-grid-react'
 
-import actionRenderer from './Doctor/actionRenderer'
+import actionRenderer from './Patient/actionRenderer'
 
 const columns = [
   {

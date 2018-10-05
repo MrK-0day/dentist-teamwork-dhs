@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { TablePatient } from '../table/TablePatient'
+import { TablePatient } from '../ag-grid/TablePatient'
 import { ModalPatient } from '../modal/ModalPatient'
 import { Button, Row, Col, Input } from 'antd';
 

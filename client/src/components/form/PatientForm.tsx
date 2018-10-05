@@ -126,6 +126,7 @@ class PatientForm extends React.Component<any, any> {
           <AutoComplete
             filterOption={(inputValue: any, option: any) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
             dataSource={countries}
+            defaultValue={this.props.nationality}
             onSelect={this.handleCountrySelect.bind(this)}
             onChange={this.handleCountryChangeValue.bind(this)}
           ><Input placeholder='You nationality' ></Input></AutoComplete>

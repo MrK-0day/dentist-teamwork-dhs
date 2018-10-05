@@ -120,3 +120,19 @@ export const GQL_getDoctor = gql`
     }
   }
 `
+
+export const GQL_addDoctor = gql`
+  mutation addPatient ($fullname: String!, $gender: String, $dob: String, $career: String, $address: String, $phone: String!, $nationality: String, $email: String, $refBy: String){
+    addPatient (fullname: $fullname, gender: $gender, dob:$dob, career: $career, address: $address, phone: $phone, nationality: $nationality, email: $email, refBy: $refBy){
+      _id fullname gender dob career address phone nationality email refBy
+    }
+  }
+`
+
+export const GQL_removeDoctor = gql`
+  mutation removePatient ($_id: ID!) {
+    removePatient(_id:$_id){
+      _id fullname gender dob career address phone nationality email refBy
+    }
+  }
+`

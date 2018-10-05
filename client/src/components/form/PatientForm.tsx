@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { Form, Input, Select, Row, Col, Divider ,Checkbox, Button, Radio, DatePicker } from 'antd'
+import { Form, Input, Select, Row, Col, Divider ,Checkbox, Button, Radio, DatePicker, AutoComplete } from 'antd'
 
 import { phone_prefixes, countries } from '../misc/regionData'
 import { DateFormat } from '../misc/const'
@@ -22,8 +22,6 @@ const formItemLayout = {
   }
 }
 
-const jobLists = ['Student','Woker']
-
 class PatientForm extends React.Component<any, any> {
   handleRadioChange(e : any) {
     this.props.onGenderRadioChange(e.target.value)
@@ -33,6 +31,8 @@ class PatientForm extends React.Component<any, any> {
     console.log(this.props)
   }
   handleChange(e: any){
+    console.log(e.target)
+    console.log(this.props)
     this.props.setMyState(e.target.id,e.target.value)
   }
   handleDateChange(date: any, dateString: string) {
@@ -51,24 +51,12 @@ class PatientForm extends React.Component<any, any> {
     this.props.setMyState('dob',selectedDate)
   }
   handleCountrySelect(value: string){
-    this.props.setMyState('nationality',countries[Number(value)].name)
+    this.props.setMyState('nationality', value)
   }
-  handleJobSelect(value:string){
-    this.props.setMyState('career',jobLists[Number(value)])
+  handleCountryChangeValue(value: string) {
+    this.props.setMyState('nationality', value)
   }
   render() {
-    const prefixSelector = <Select defaultValue="+84" >
-    {phone_prefixes.map((value: any, index: number) => {
-        return <Option key={index}>{value.prefix}</Option>
-    })}
-    </Select>
-
-    const countrySelector = <Select  onSelect={this.handleCountrySelect.bind(this)} placeholder='Select country'>
-    {countries.map((value: any, index: any)=>{
-        return <Option key={index}>{value.name}</Option>
-    })}
-    </Select>
-
     const AddForm = (
       <Form layout='horizontal'>
         <FormItem {...formItemLayout} label='Name'>
@@ -88,12 +76,19 @@ class PatientForm extends React.Component<any, any> {
           <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} defaultValue={this.props.email} value={this.props.email}/>
         </FormItem>
         <FormItem {...formItemLayout} label='Phone'>
-          <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} addonBefore={prefixSelector} style={{ width: '100%' }} defaultValue={this.props.phone} value={this.props.phone} />
+          <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} style={{ width: '100%' }} defaultValue={this.props.phone} value={this.props.phone} />
         </FormItem>
         <FormItem {...formItemLayout} label='Address'>
           <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.phone} value={this.props.address}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='Nationality'>{countrySelector}</FormItem>
+        <FormItem {...formItemLayout} label='Nationality'>
+          <AutoComplete
+            filterOption={(inputValue: any, option: any) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+            dataSource={countries}
+            onSelect={this.handleCountrySelect.bind(this)}
+            onChange={this.handleCountryChangeValue.bind(this)}
+          ><Input placeholder='You nationality' ></Input></AutoComplete>
+        </FormItem>
         <FormItem {...formItemLayout} label='Career'>
           <Input id='career' placeholder='Your current job' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
         </FormItem>
@@ -122,12 +117,19 @@ class PatientForm extends React.Component<any, any> {
           <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} value={this.props.email}/>
         </FormItem>
         <FormItem {...formItemLayout} label='Phone'>
-          <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} addonBefore={prefixSelector} style={{ width: '100%' }} value={this.props.phone} />
+          <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} style={{ width: '100%' }} value={this.props.phone} />
         </FormItem>
         <FormItem {...formItemLayout} label='Address'>
           <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' value={this.props.address}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='Nationality'>{countrySelector}</FormItem>
+        <FormItem {...formItemLayout} label='Nationality'>
+          <AutoComplete
+            filterOption={(inputValue: any, option: any) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+            dataSource={countries}
+            onSelect={this.handleCountrySelect.bind(this)}
+            onChange={this.handleCountryChangeValue.bind(this)}
+          ><Input placeholder='You nationality' ></Input></AutoComplete>
+        </FormItem>
         <FormItem {...formItemLayout} label='Career'>
           <Input id='career' placeholder='Your current job' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
         </FormItem>
@@ -139,7 +141,7 @@ class PatientForm extends React.Component<any, any> {
 
     const DeleteForm = (
       <div>
-        <h2>Are you sure xyz to delete</h2>
+        <h2>Are you sure to remove {this.props.fullname}</h2>
       </div>
     )
     if(this.props.targetModal == 'add') return AddForm

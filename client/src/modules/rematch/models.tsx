@@ -1,6 +1,18 @@
 import { Client } from '../apollo/apollo'
-import { GQL_getPatient, GQL_addPatient, GQL_UpdatePatient ,GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_getSchedules } from '../apollo/gql'
+import { DateFormat } from '../../components/misc/const'
+import { GQL_getPatient, GQL_getPatientById, GQL_addPatient  ,GQL_deletePatient, GQL_updatePatient, GQL_getRecords, GQL_addRecord, GQL_getSchedules } from '../apollo/gql'
+
 const moment = require('moment')
+const momentDateString = moment().format(DateFormat).split('-')
+const momentTimeStamp = moment().set({
+  'date': +momentDateString[0],
+  'month': +momentDateString[1] - 1,
+  'year': +momentDateString[2],
+  'hour': 0,
+  'minute': 0,
+  'second': 0
+}).unix()
+
 
 export const Login = {
   state: {
@@ -71,11 +83,11 @@ export const Patient = {
     patientData: [],
     fullname: '',
     gender: 'male',
-    dob: 0,
+    dob: momentTimeStamp,
     career: '',
     address: '',
     phone: '',
-    nationality: '',
+    nationality: 'Viet Nam',
     email: '',
     refBy: ''
   },
@@ -129,7 +141,7 @@ export const Patient = {
         career: '',
         address: '',
         phone: '',
-        nationality: '',
+        nationality: 'Viet Nam',
         email: '',
         refBy: ''
       }
@@ -205,18 +217,21 @@ export const Patient = {
       let res: any = await Client()
       .query(
         {
-          query: GQL_getPatient
+          variables: {
+            _id: id
+          },
+          query: GQL_getPatientById
         }
       )
-      // console.log(res.data.getPatients)
-      let patients = [...res.data.getPatients]
-      for( var i = 0; i< patients.length ; i++) {
-        if(patients[i]._id == id) {
-          console.log(patients[i])
-          dispatch.Patient.initEditModal(patients[i])
-          dispatch.Patient.openModal('edit')
-        }
-      }
+      console.log(res.data)
+      dispatch.Patient.initEditModal(res.data.patient)
+      dispatch.Patient.openModal('edit')
+      // let patients = [...res.data.getPatients]
+      // for( var i = 0; i< patients.length ; i++) {
+      //   if(patients[i]._id == id) {
+      //     console.log(patients[i])
+      //   }
+      // }
     },
     async asyncUpdatePatient (payload: any, rootState: any) {
       let res: any = await Client()

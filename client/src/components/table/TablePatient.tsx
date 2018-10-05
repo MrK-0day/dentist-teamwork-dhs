@@ -1,78 +1,72 @@
 import * as React from 'react'
-import { Table, Button, Popconfirm, message } from 'antd'
+import { AgGridReact } from 'ag-grid-react'
 
+import actionRenderer from './Doctor/actionRenderer'
 
+const columns = [
+  {
+    headerName:'Name',
+    field:'fullname'
+  },
+  {
+    headerName:'Gender',
+    field:'gender'
+  },
+  {
+    headerName:'Birthdate',
+    field:'dob'
+  },
+  {
+    headerName:'Job',
+    field:'career'
+  },
+  {
+    headerName:'Address',
+    field:'address'
+  },
+  {
+    headerName:'Phone',
+    field:'phone'
+  },
+  {
+    headerName:'Nationality',
+    field:'nationality'
+  },
+  {
+    headerName:'E-mail',
+    field:'email'
+  },
+  {
+    headerName:'Referer',
+    field:'refBy'
+  },
+  {
+    headerName:'Actions',
+    cellRenderer: 'actionRenderer'
+  }
+]
+
+const frameworkComponents: any = {
+  actionRenderer
+}
 
 export const TablePatient = ({ props }: { props: any }) => {
-  function handleDelete(event: any) {
-    console.log(props)
-    console.log(event.target)
-    props.setMyState('target',event.target.value)
-    props.openModal('delete')
+  function onGridReady (params: any) {
+    params.api.sizeColumnsToFit()
   }
-  function handleEdit(event: any) {
-    console.log(event.target.value)
-    props.asyncInitUpdatePatient(event.target.value)
-  }
-  const columns = [
-    {
-      title:'Name',
-      key:'fullname',
-      dataIndex:'fullname',
-      width: 300
-    },
-    {
-      title:'Gender',
-      key:'gender',
-      dataIndex:'gender',
-      width: 100
-    },
-    {
-      title:'Birthdate',
-      key:'dob',
-      dataIndex:'dob'
-    },
-    {
-      title:'Job',
-      key:'career',
-      dataIndex:'career'
-    },
-    {
-      title:'Address',
-      key:'address',
-      dataIndex:'address'
-    },
-    {
-      title:'Phone',
-      key:'phone',
-      dataIndex:'phone'
-    },
-    {
-      title:'Nationality',
-      key:'nationality',
-      dataIndex:'nationality'
-    },
-    {
-      title:'E-mail',
-      key:'email',
-      dataIndex:'email'
-    },
-    {
-      title:'Referer',
-      key:'refBy',
-      dataIndex:'refBy'
-    },
-    {
-      title:'Actions',
-      key:'actions',
-      width: 170,
-      render: (text: any, row: any) => (
-        <span>
-          <Button name='edit' value={row.id} type='primary' onClick={handleEdit}>Edit</Button>
-          <Button name='delete' value={row.id} onClick={handleDelete}>Delete</Button>
-        </span>
-      )
-    }
-  ]
-  return <Table bordered={true} columns={columns} dataSource={props.patientData} />
+  // function handleDelete(event: any) {
+  //   console.log(props)
+  //   console.log(event.target)
+  //   props.setMyState('target',event.target.value)
+  //   props.openModal('delete')
+  // }
+  // function handleEdit(event: any) {
+  //   console.log(event.target.value)
+  //   props.asyncInitUpdatePatient(event.target.value)
+  // }
+  return (
+    <div style={{ height: '93vh' }} className='ag-theme-balham'>
+      <AgGridReact rowSelection='single' enableSorting={true} enableFilter={true} columnDefs={columns} rowData={props.patientData} onGridReady={onGridReady} frameworkComponents={frameworkComponents} />
+    </div>
+  )
 }

@@ -558,7 +558,7 @@ export const Schedule = {
       let res: any = await Client().query({
         query: GQL_getSchedules
       })
-      console.log(res.data.getSchedules)
+      // console.log(res.data.getSchedules)
     }
   })
 }

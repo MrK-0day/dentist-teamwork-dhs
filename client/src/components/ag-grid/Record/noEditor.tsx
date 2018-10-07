@@ -36,6 +36,7 @@ class noEditor extends React.Component<any, any> {
     this.state.textInput.current.focus()
   }
   async updateMedialRecord (payload: any) {
+    // console.log(payload)
     await Client().mutate({
       variables: {
         _id: payload.key,
@@ -53,7 +54,7 @@ class noEditor extends React.Component<any, any> {
     })
   }
   render () {
-    return <Input ref={this.state.textInput} style={{ width: '100%' }} value={this.state.value} onChange={this.handleChange.bind(this)} />
+    return <Input ref={this.state.textInput} style={{ width: '100%', height: 'auto' }} value={this.state.value} onChange={this.handleChange.bind(this)} />
   }
 }
 

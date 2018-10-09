@@ -95,6 +95,12 @@ class PatientForm extends React.Component<any, any> {
         <FormItem {...formItemLayout} label='Referer'>
           <Input id='refBy' onChange={this.handleChange.bind(this)} defaultValue={this.props.refBy} value={this.props.refBy}/>
         </FormItem>
+        <FormItem label='Medical History'>
+          <Input></Input>
+          <Input></Input>
+          <Input></Input>
+          <Input></Input>
+        </FormItem>
       </Form>
     )
 

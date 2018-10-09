@@ -27,7 +27,8 @@ export const Patient = {
     phone: '',
     nationality: 'Viet Nam',
     email: '',
-    refBy: ''
+    refBy: '',
+    medicalHistory: []
   },
   reducers: {
     initEditModal (state: any, patient: any) {
@@ -107,7 +108,8 @@ export const Patient = {
             phone: patient.phone,
             nationality: patient.nationality,
             email: patient.email,
-            refBy: patient.refBy
+            refBy: patient.refBy,
+            medicalHistory: patient.medicalHistory
           }
         }
       })
@@ -126,7 +128,8 @@ export const Patient = {
           'phone': rootState.Patient.phone,
           'nationality': rootState.Patient.nationality,
           'email': rootState.Patient.email,
-          'refBy': rootState.Patient.refBy
+          'refBy': rootState.Patient.refBy,
+          'medicalHistory': rootState.Patient.medicalHistory
         },
         mutation: GQL.GQL_addPatient
       })
@@ -171,7 +174,8 @@ export const Patient = {
           'phone': rootState.Patient.phone,
           'nationality': rootState.Patient.nationality,
           'email': rootState.Patient.email,
-          'refBy': rootState.Patient.refBy
+          'refBy': rootState.Patient.refBy,
+          'medicalHistory': rootState.Patient.medicalHistory
         },
         mutation: GQL.GQL_updatePatient
       })

@@ -260,6 +260,9 @@ const resolvers = {
   },
 
   Record: {
+    doctor (record) {
+      return Doctor.findById(record.doctorId)
+    },
     steps (record) {
       return Step.find({ recordId: record._id, isEnabled: true })
     },

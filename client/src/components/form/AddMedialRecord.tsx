@@ -1,6 +1,84 @@
 import * as React from 'react'
-import { Form, Input, DatePicker, Select } from 'antd'
+import { Form, Input, DatePicker, Select, TreeSelect } from 'antd'
 let toothmap =  require('../../images/tooth-map.jpe')
+
+const fake_data_Treatment = [
+  {
+    title: 'Răng khôn mọc lệch',
+    value: 'rangkhonmoclech',
+    key: 'rangkhonmoclech',
+    children: [
+      {
+        title: 'Kháng sinh toàn thân',
+        value: 'khangsinhtoanthan',
+        key: 'khangsinhtoanthan',
+        disableCheckbox: true
+      },
+      {
+        title: 'Bơm rửa túi quanh răng',
+        value: 'bomruatuiquanhrang',
+        key: 'bomruatuiquanhrang',
+        disableCheckbox: true
+      },
+      {
+        title: 'Nhổ răng khôn mọc lệch',
+        value: 'nhorangkhonmoclech',
+        key: 'nhorangkhonmoclech',
+        disableCheckbox: true
+      }
+    ]
+  },
+  {
+    title: 'Răng khôn mọc lệch 1',
+    value: 'rangkhonmoclech1',
+    key: 'rangkhonmoclech1',
+    children: [
+      {
+        title: 'Kháng sinh toàn thân 1',
+        value: 'khangsinhtoanthan1',
+        key: 'khangsinhtoanthan1',
+        disableCheckbox: true
+      },
+      {
+        title: 'Bơm rửa túi quanh răng 1',
+        value: 'bomruatuiquanhrang1',
+        key: 'bomruatuiquanhrang1',
+        disableCheckbox: true
+      },
+      {
+        title: 'Nhổ răng khôn mọc lệch 1',
+        value: 'nhorangkhonmoclech1',
+        key: 'nhorangkhonmoclech1',
+        disableCheckbox: true
+      }
+    ]
+  },
+  {
+    title: 'Răng khôn mọc lệch 2',
+    value: 'rangkhonmoclech2',
+    key: 'rangkhonmoclech2',
+    children: [
+      {
+        title: 'Kháng sinh toàn thân 2',
+        value: 'khangsinhtoanthan2',
+        key: 'khangsinhtoanthan2',
+        disableCheckbox: true
+      },
+      {
+        title: 'Bơm rửa túi quanh răng 2',
+        value: 'bomruatuiquanhrang2',
+        key: 'bomruatuiquanhrang2',
+        disableCheckbox: true
+      },
+      {
+        title: 'Nhổ răng khôn mọc lệch 2',
+        value: 'nhorangkhonmoclech2',
+        key: 'nhorangkhonmoclech2',
+        disableCheckbox: true
+      }
+    ]
+  }
+]
 
 const formItemLayout = {
   labelCol: {
@@ -36,6 +114,10 @@ let listTooth: number[] = []
 for (let i = 1; i <= 32; i++) listTooth.push(i)
 
 export const AddMedialRecord = ({ props }: { props: any }) => {
+  function handleChangeTreatment (value: any) {
+    // console.log(value)
+    props.setState('treatment', value)
+  }
   function handleChange (e: any) {
     props.setState(e.target.name, e.target.value)
   }
@@ -73,12 +155,6 @@ export const AddMedialRecord = ({ props }: { props: any }) => {
       <Form.Item {...formItemLayout} label='Ngày'>
         <DatePicker onChange={handleChangeDate} placeholder='Ngày' value={props.date} format='DD-MM-YYYY' style={{ width: '100%' }} />
       </Form.Item>
-      <Form.Item {...formItemLayout} label='Tổng Tiền'>
-        <Input type='text' value={props.cost} name='cost' onChange={handleChange} placeholder='Tổng Tiền' />
-      </Form.Item>
-      <Form.Item {...formItemLayout} label='Đã Thanh Toán'>
-        <Input type='text' value={props.paid} name='paid' onChange={handleChange} placeholder='Đã Thanh Toán' />
-      </Form.Item>
       <Form.Item>
         <img style={{ width: '100%' }} src={toothmap} />
       </Form.Item>
@@ -88,6 +164,15 @@ export const AddMedialRecord = ({ props }: { props: any }) => {
             return <Select.Option key={value}>{value}</Select.Option>
           })}
         </Select>
+      </Form.Item>
+      <Form.Item {...formItemLayout} label='Liệu Trình'>
+        <TreeSelect value={props.treatment} onChange={handleChangeTreatment} style={{ width: '100%' }} dropdownStyle={{ maxHeight: 200, overflow: 'auto' }} treeData={fake_data_Treatment} treeCheckable />
+      </Form.Item>
+      <Form.Item {...formItemLayout} label='Tổng Tiền'>
+        <Input type='text' value={props.cost} name='cost' onChange={handleChange} placeholder='Tổng Tiền' />
+      </Form.Item>
+      <Form.Item {...formItemLayout} label='Đã Thanh Toán'>
+        <Input type='text' value={props.paid} name='paid' onChange={handleChange} placeholder='Đã Thanh Toán' />
       </Form.Item>
     </Form>
   )

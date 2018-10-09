@@ -1,7 +1,9 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { Input, Button, Row, Col } from 'antd'
 
 import { TableSchedule } from '../ag-grid/TableSchedule'
+import { ModalSchedule } from '../modal/ModalSchedule'
 
 class ContentSchedule extends React.Component<any, any> {
   componentDidMount () {
@@ -9,7 +11,16 @@ class ContentSchedule extends React.Component<any, any> {
   }
   render () {
     return (
-      <TableSchedule props={this.props} />
+      <div>
+        <div style={{ paddingBottom: 10 }}>
+          <Row gutter={10}>
+            <Col span={20}><Input.Search /></Col>
+            <Col span={4}><Button onClick={this.props.onOpenModal.bind(this)} block icon='plus' type='primary'>Tạo Lịch Hẹn</Button></Col>
+          </Row>
+        </div>
+        <TableSchedule props={this.props} />
+        <ModalSchedule props={this.props} />
+      </div>
     )
   }
 }

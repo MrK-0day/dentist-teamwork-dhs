@@ -5,31 +5,31 @@ import actionRenderer from './Patient/actionRenderer'
 
 const columns = [
   {
-    headerName:'Name',
+    headerName:'Họ tên',
     field:'fullname'
   },
   {
-    headerName:'Gender',
+    headerName:'Giới tính',
     field:'gender'
   },
   {
-    headerName:'Birthdate',
+    headerName:'Ngày sinh',
     field:'dob'
   },
   {
-    headerName:'Job',
+    headerName:'Nghề nghiệp',
     field:'career'
   },
   {
-    headerName:'Address',
+    headerName:'Địa chỉ',
     field:'address'
   },
   {
-    headerName:'Phone',
+    headerName:'SDT',
     field:'phone'
   },
   {
-    headerName:'Nationality',
+    headerName:'Quốc gia',
     field:'nationality'
   },
   {
@@ -37,11 +37,11 @@ const columns = [
     field:'email'
   },
   {
-    headerName:'Referer',
+    headerName:'Người giới thiệu',
     field:'refBy'
   },
   {
-    headerName:'Actions',
+    headerName:'Thao tác',
     cellRenderer: 'actionRenderer'
   }
 ]

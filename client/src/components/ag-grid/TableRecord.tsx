@@ -55,9 +55,18 @@ export const TableRecord = ({ props }: { props: any }) => {
   function onGridReady (params: any) {
     params.api.sizeColumnsToFit()
   }
+  function onSelectionChanged (e: any) {
+    let tmp: any[] = e.api.selectionController.selectedNodes
+    let log: any[] = Object.keys(tmp)
+    for (let k of log) {
+      if (tmp[k] !== undefined) {
+        // console.log(tmp[k].data)
+      }
+    }
+  }
   return (
     <div style={{ height: '93vh' }} className='ag-theme-balham'>
-      <AgGridReact rowSelection='single' enableSorting={true} enableFilter={true} columnDefs={CL} rowData={props.listdatarecord} onGridReady={onGridReady} frameworkComponents={frameworkComponents} />
+      <AgGridReact onSelectionChanged={onSelectionChanged} rowSelection='single' enableSorting={true} enableFilter={true} columnDefs={CL} rowData={props.listdatarecord} onGridReady={onGridReady} frameworkComponents={frameworkComponents} />
     </div>
   )
 }

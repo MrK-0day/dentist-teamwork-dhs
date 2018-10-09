@@ -4,6 +4,10 @@ import { Modal, message } from 'antd'
 import PatientForm from '../form/PatientForm'
 
 export const ModalPatient = ({ props }: { props: any }) => {
+  var modalTitle = ''
+  if(props.targetModal === 'add') modalTitle = 'Thêm bệnh nhân'
+  else if (props.targetModal === 'delete') modalTitle = 'Xóa bệnh nhân'
+  else if (props.targetModal === 'edit') modalTitle = 'Sửa bệnh nhân'
   console.log(props)
   function handleModal() {
     if(props.targetModal=='delete') {
@@ -30,7 +34,7 @@ export const ModalPatient = ({ props }: { props: any }) => {
     props.closeModal()
   }
   return (
-    <Modal maskClosable={false} onOk={handleModal} title={props.targetModal} visible={props.targetModal!='none'?true: false}
+    <Modal maskClosable={false} onOk={handleModal} title={modalTitle} visible={props.targetModal!='none'?true: false}
        onCancel={handleCloseModal}>
       <PatientForm />
     </Modal>

@@ -30,13 +30,19 @@ export const GQL_removeRecord = gql`
 `
 
 export const GQL_getRecordById = gql`
-  query getrecordbyid ($_id: ID!) {
+  query getRecordById($_id: ID!) {
     record (_id: $_id) {
-      _id patientId recordNumber no
-      teeth cost paid createdDate
+      _id patientId recordNumber
+      no teeth cost paid createdDate
       treatment doctorId isEnabled
+      doctor {
+        _id fullname
+      }
       patient {
-        fullname
+        _id fullname
+      }
+      steps {
+        _id
       }
     }
   }
@@ -76,7 +82,7 @@ export const GQL_getSchedules = gql`
 export const GQL_getPatient = gql`
   {
     getPatients{
-      _id fullname gender dob career address phone nationality email refBy isEnabled
+      _id fullname gender dob career address phone nationality email refBy isEnabled medicalHistory
     }
   }
 `
@@ -90,8 +96,8 @@ export const GQL_getPatientById = gql`
 `
 
 export const GQL_addPatient = gql`
-  mutation addPatient ($fullname: String!, $gender: String, $dob: String, $career: String, $address: String, $phone: String!, $nationality: String, $email: String, $refBy: String){
-    addPatient (fullname: $fullname, gender: $gender, dob:$dob, career: $career, address: $address, phone: $phone, nationality: $nationality, email: $email, refBy: $refBy){
+  mutation addPatient ($fullname: String!, $gender: String, $dob: String, $career: String, $address: String, $phone: String!, $nationality: String, $email: String, $refBy: String, $medicalHistory: [String]){
+    addPatient (fullname: $fullname, gender: $gender, dob:$dob, career: $career, address: $address, phone: $phone, nationality: $nationality, email: $email, refBy: $refBy, medicalHistory: $medicalHistory){
       _id fullname gender dob career address phone nationality email refBy
     }
   }
@@ -117,6 +123,22 @@ export const GQL_getDoctor = gql`
   {
     getDoctors{
       _id fullname gender dob specialize address phone nationality email refBy username isEnabled
+    }
+  }
+`
+
+export const GQL_addDoctor = gql`
+  mutation addPatient ($fullname: String!, $gender: String, $dob: String, $career: String, $address: String, $phone: String!, $nationality: String, $email: String, $refBy: String){
+    addPatient (fullname: $fullname, gender: $gender, dob:$dob, career: $career, address: $address, phone: $phone, nationality: $nationality, email: $email, refBy: $refBy){
+      _id fullname gender dob career address phone nationality email refBy
+    }
+  }
+`
+
+export const GQL_removeDoctor = gql`
+  mutation removePatient ($_id: ID!) {
+    removePatient(_id:$_id){
+      _id fullname gender dob career address phone nationality email refBy
     }
   }
 `

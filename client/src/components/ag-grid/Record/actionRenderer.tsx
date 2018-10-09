@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Client } from '../../../modules/apollo/apollo'
-import { GQL_removeRecord } from '../../../modules/apollo/gql'
+import { GQL_removeRecord, GQL_getRecordById } from '../../../modules/apollo/gql'
 import { Button } from 'antd'
 
 class actionRenderer extends React.Component<any, any> {
@@ -25,8 +25,30 @@ class actionRenderer extends React.Component<any, any> {
       mutation: GQL_removeRecord
     })
   }
+  async onView () {
+    // console.log(this.props.node.data.key)
+    let _id = this.props.node.data.key
+    let data = await this.getRecordById(_id)
+    // console.log(data)
+    await this.props.setState('datachitiet', data)
+    await this.props.setState('visiblechitiet', true)
+  }
+  async getRecordById (payload: any) {
+    let { data: { record: res } }: {data: any} = await Client().query({
+      variables: {
+        _id: payload
+      },
+      query: GQL_getRecordById
+    })
+    return res
+  }
   render () {
-    return <Button size='small' onClick={this.onRemove.bind(this)} type='danger'>Xóa</Button>
+    return (
+      <div>
+        <Button size='small' onClick={this.onRemove.bind(this)} type='danger'>Xóa</Button>
+        <Button size='small' onClick={this.onView.bind(this)} type='default'>Chi Tiết</Button>
+      </div>
+    )
   }
 }
 

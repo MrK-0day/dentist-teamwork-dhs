@@ -19,7 +19,7 @@ const CL = [
     field: 'content',
   },
   {
-    headerName: 'Giao Đoạn',
+    headerName: 'Giai Đoạn',
     field: 'step',
   },
   {
@@ -33,7 +33,7 @@ export const TableSchedule = ({ props }: { props: any }) => {
     params.api.sizeColumnsToFit()
   }
   return (
-    <div style={{ height: '97vh' }} className='ag-theme-balham'>
+    <div style={{ height: '93vh' }} className='ag-theme-balham'>
       <AgGridReact rowSelection='single' enableSorting={true} enableFilter={true} columnDefs={CL} rowData={props.listSchedule} onGridReady={onGridReady} />
     </div>
   )

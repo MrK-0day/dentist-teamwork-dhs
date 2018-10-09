@@ -18,7 +18,9 @@ export const MedialRecord = {
     listtooth: [],
     notecount: -1,
     notetext: '',
-    listdatarecord: []
+    listdatarecord: [],
+    visiblechitiet: false,
+    datachitiet: {}
   },
   reducers: {
     setState (state: any, key: any, value: any) {

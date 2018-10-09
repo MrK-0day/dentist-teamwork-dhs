@@ -4,6 +4,7 @@ import { Button, Input, Row, Col } from 'antd'
 
 import { TableRecord } from '../ag-grid/TableRecord'
 import { ModalMedialRecord } from '../modal/ModalMedialRecord'
+import { ModalViewRecord } from '../modal/ModalViewRecord'
 
 class ContentMedialRecord extends React.Component<any, any> {
   componentDidMount () {
@@ -25,6 +26,7 @@ class ContentMedialRecord extends React.Component<any, any> {
         </div>
         <TableRecord props={this.props} />
         <ModalMedialRecord props={this.props} />
+        <ModalViewRecord props={this.props} />
       </div>
     )
   }

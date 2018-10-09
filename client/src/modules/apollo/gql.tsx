@@ -30,13 +30,19 @@ export const GQL_removeRecord = gql`
 `
 
 export const GQL_getRecordById = gql`
-  query getrecordbyid ($_id: ID!) {
+  query getRecordById($_id: ID!) {
     record (_id: $_id) {
-      _id patientId recordNumber no
-      teeth cost paid createdDate
+      _id patientId recordNumber
+      no teeth cost paid createdDate
       treatment doctorId isEnabled
+      doctor {
+        _id fullname
+      }
       patient {
-        fullname
+        _id fullname
+      }
+      steps {
+        _id
       }
     }
   }

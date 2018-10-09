@@ -60,7 +60,7 @@ export const TableRecord = ({ props }: { props: any }) => {
     let log: any[] = Object.keys(tmp)
     for (let k of log) {
       if (tmp[k] !== undefined) {
-        console.log(tmp[k].data)
+        // console.log(tmp[k].data)
       }
     }
   }

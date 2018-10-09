@@ -28,7 +28,8 @@ export const Patient = {
     nationality: 'Viet Nam',
     email: '',
     refBy: '',
-    medicalHistory: []
+    medicalHistory: [],
+    saveBtnHide: false
   },
   reducers: {
     initEditModal (state: any, patient: any) {
@@ -96,7 +97,7 @@ export const Patient = {
         )
       console.log(res.data.getPatients)
       let newPatientList = res.data.getPatients.map((patient: any)=>{
-        console.log(patient.isEnabled)
+        console.log(patient)
         if(patient.isEnabled===true) {
           return {
             id: patient._id,
@@ -109,7 +110,7 @@ export const Patient = {
             nationality: patient.nationality,
             email: patient.email,
             refBy: patient.refBy,
-            medicalHistory: patient.medicalHistory
+            medicalHistory: [...patient.medicalHistory]
           }
         }
       })

@@ -25,8 +25,8 @@ class actionRenderer extends React.Component<any, any> {
   render () {
     return(
       <span>
-        <Button name='edit' size='small' type='primary' onClick={this.handleUpdate.bind(this)}>Edit</Button>
-        <Button name='delete' size='small' onClick={this.handleDelete.bind(this)}>Delete</Button>
+        <Button name='edit' size='small' type='primary' onClick={this.handleUpdate.bind(this)}>Sửa</Button>
+        <Button name='delete' size='small' onClick={this.handleDelete.bind(this)}>Xóa</Button>
       </span>
       )
   }

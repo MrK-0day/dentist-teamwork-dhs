@@ -15,8 +15,8 @@ class ContentPatient extends React.Component<any, any> {
     return (
       <div>
         <Row gutter={10} className='patient-table-header'>
-          <Col span={20}><Search placeholder='Patient code'></Search></Col>
-          <Col span={4}><Button className='patient-header-btn' type='primary' icon='plus' onClick={()=>this.props.openModal('add')} >Add Patient</Button></Col>
+          <Col span={20}><Search placeholder='Mã bệnh nhân'></Search></Col>
+          <Col span={4}><Button className='patient-header-btn' type='primary' icon='plus' onClick={()=>this.props.openModal('add')} >Thêm bệnh nhân</Button></Col>
         </Row>
         <ModalPatient props={this.props} />
         <TablePatient props={this.props} />

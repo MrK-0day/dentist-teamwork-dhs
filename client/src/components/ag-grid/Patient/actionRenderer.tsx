@@ -12,14 +12,14 @@ class actionRenderer extends React.Component<any, any> {
     this.forceUpdate()
   }
   handleDelete (event: any) {
-    console.log(this.props.node.data.fullname)
-    console.log(event.target)
+    // console.log(this.props.node.data.fullname)
+    // console.log(event.target)
     this.props.setMyState('target',this.props.node.data.id)
     this.props.setMyState('fullname',this.props.node.data.fullname)
     this.props.openModal('delete')
   }
   handleUpdate(event: any) {
-    console.log(this.props.node.data.id)
+    // console.log(this.props.node.data.id)
     this.props.asyncInitUpdatePatient(this.props.node.data.id)
   }
   render () {

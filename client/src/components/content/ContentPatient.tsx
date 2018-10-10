@@ -11,7 +11,7 @@ class ContentPatient extends React.Component<any, any> {
     this.props.asyncInitData()
   }
   render () {
-    console.log(this.props.targetModal)
+    // console.log(this.props.targetModal)
     return (
       <div>
         <Row gutter={10} className='patient-table-header'>

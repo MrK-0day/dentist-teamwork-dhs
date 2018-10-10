@@ -4,24 +4,14 @@ import { Form, Input, Icon, Row, Col, Divider ,Checkbox, Button, Radio, DatePick
 
 import { phone_prefixes, countries } from '../misc/regionData'
 import { DateFormat } from '../misc/const'
-import TextArea from 'antd/lib/input/TextArea';
 let moment = require('moment')
 
+//CONST
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
 
 let uuid = 0
 
-// const formItemLayout = {
-//   labelCol: {
-//     xs: { span: 18 },
-//     sm: { span: 6 },
-//   },
-//   wrapperCol: {
-//     xs: { span: 20 },
-//     sm: { span: 18 }
-//   }
-// }
 const formItemLayout = {
   labelCol: {
     sm: { span: 4 }
@@ -40,14 +30,9 @@ const historyLayout = {
   }
 }
 
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    xs: { span: 18, offset: 0 },
-    sm: { span: 18, offset: 4 },
-  },
-}
-
+//CLASS
 class iPatientForm extends React.Component<any, any> {
+  //METHODS
   handleRadioChange(e : any) {
     this.props.onGenderRadioChange(e.target.value)
   }
@@ -66,9 +51,9 @@ class iPatientForm extends React.Component<any, any> {
       'minute': 0,
       'second': 0
     }).unix()
-    console.log(selectedDate)
+    // console.log(selectedDate)
     const converted = moment(selectedDate*1000).format(`DD-MM-YYYY`)
-    console.log(converted)
+    // console.log(converted)
     this.props.setMyState('dob',selectedDate)
   }
   handleCountrySelect(value: string){
@@ -78,18 +63,25 @@ class iPatientForm extends React.Component<any, any> {
     this.props.setMyState('nationality', value)
   }
   handleHistorySave(e: any) {
-    console.log(e)
+    // console.log(e)
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
-        console.log('Received values of form: ', values)
+        // console.log('Received values of form: ', values)
         var medicalHistory = values.records.filter((i: any)=> {return i})
         this.props.setMyState('medicalHistory',medicalHistory)
       }
     })
   }
+
   render() {
+    //CONST
     const { form } = this.props
     const editKeys = this.props.editKeys
+    const { getFieldDecorator, getFieldValue } = this.props.form
+    getFieldDecorator('keys', { initialValue: [] })
+    const keys = getFieldValue('keys')
+
+    //ADDON
     function addField () {
       const keys = form.getFieldValue('keys')
       const nextKeys = keys.concat(uuid)
@@ -97,7 +89,7 @@ class iPatientForm extends React.Component<any, any> {
       form.setFieldsValue({
         keys: nextKeys
       });
-      console.log(form.getFieldValue('keys'))
+      // console.log(form.getFieldValue('keys'))
     }
     function removeField (k: any ){
       const keys = form.getFieldValue('keys')
@@ -106,14 +98,8 @@ class iPatientForm extends React.Component<any, any> {
         keys: keys.filter((key: any) => key!== k )
       })
     }
-    function initFieldEdit() {
-      form.setFieldsValue({
-        keys: editKeys
-      })
-    }
-    const { getFieldDecorator, getFieldValue } = this.props.form
-    getFieldDecorator('keys', { initialValue: [] })
-    const keys = getFieldValue('keys')
+
+    //SUB COMPONENTS
     const dynamicFieldsAdd = keys.map((k: any, index: any)=>{
       return (
         <FormItem
@@ -141,10 +127,11 @@ class iPatientForm extends React.Component<any, any> {
               type='minus-circle-o'
               onClick={() => removeField(k)}
             />
-          ) : null}
+            ) : null}
         </FormItem>
       )
     })
+
     const dynamicFieldsEdit = editKeys.map((k: any, index: any)=>{
       return (
         <FormItem
@@ -174,6 +161,16 @@ class iPatientForm extends React.Component<any, any> {
         </FormItem>
       )
     })
+
+    const countryAutoComplete = (
+      <AutoComplete
+        filterOption={(inputValue: any, option: any) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+        dataSource={countries}
+        onSelect={this.handleCountrySelect.bind(this)}
+        onChange={this.handleCountryChangeValue.bind(this)}
+      ><Input placeholder='Nơi định cư' ></Input></AutoComplete>
+    )
+
     const AddForm = (
       <Form layout='horizontal'>
         <FormItem label='Họ tên'>
@@ -199,12 +196,7 @@ class iPatientForm extends React.Component<any, any> {
           <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.phone} value={this.props.address}/>
         </FormItem>
         <FormItem label='Quốc gia'>
-          <AutoComplete
-            filterOption={(inputValue: any, option: any) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-            dataSource={countries}
-            onSelect={this.handleCountrySelect.bind(this)}
-            onChange={this.handleCountryChangeValue.bind(this)}
-          ><Input placeholder='Nơi định cư' ></Input></AutoComplete>
+          {countryAutoComplete}
         </FormItem>
         <FormItem label='Nghề nghiệp'>
           <Input id='career' placeholder='Nghề nghiệp hiện tại' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
@@ -249,13 +241,7 @@ class iPatientForm extends React.Component<any, any> {
           <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.phone} value={this.props.address}/>
         </FormItem>
         <FormItem label='Quốc gia'>
-          <AutoComplete
-            filterOption={(inputValue: any, option: any) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-            dataSource={countries}
-            onSelect={this.handleCountrySelect.bind(this)}
-            onChange={this.handleCountryChangeValue.bind(this)}
-            defaultValue={this.props.nationality}
-          ><Input placeholder='Nơi định cư' ></Input></AutoComplete>
+          {countryAutoComplete}
         </FormItem>
         <FormItem label='Nghề nghiệp'>
           <Input id='career' placeholder='Nghề nghiệp hiện tại' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
@@ -274,12 +260,13 @@ class iPatientForm extends React.Component<any, any> {
         </FormItem>
       </Form>
     )
-
     const DeleteForm = (
       <div>
         <h2>Are you sure to remove {this.props.fullname}</h2>
       </div>
     )
+
+    //RENDER
     if(this.props.targetModal == 'add') return AddForm
     else if(this.props.targetModal =='edit') return EditForm
     else if (this.props.targetModal == 'delete') return DeleteForm
@@ -287,6 +274,7 @@ class iPatientForm extends React.Component<any, any> {
   }
 }
 
+//EXPORT
 const mapState = (state: any) => state.Patient
 
 const mapDispatch = (dispatch: any) => dispatch.Patient

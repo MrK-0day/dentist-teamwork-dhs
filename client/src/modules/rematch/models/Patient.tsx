@@ -182,7 +182,7 @@ export const Patient = {
         },
         mutation: GQL.GQL_updatePatient
       })
-      console.log(res)
+      // console.log(res)
       dispatch.Patient.resetData()
     },
   })

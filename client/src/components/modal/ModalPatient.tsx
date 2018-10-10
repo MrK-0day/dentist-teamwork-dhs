@@ -8,25 +8,25 @@ export const ModalPatient = ({ props }: { props: any }) => {
   if(props.targetModal === 'add') modalTitle = 'Thêm bệnh nhân'
   else if (props.targetModal === 'delete') modalTitle = 'Xóa bệnh nhân'
   else if (props.targetModal === 'edit') modalTitle = 'Sửa bệnh nhân'
-  console.log(props)
+  // console.log(props)
   function handleModal() {
     if(props.targetModal=='delete') {
       props.asyncDeletePatient()
       props.asyncInitData()
       props.closeModal()
-      message.success('Deleted')
+      message.success('Đã xóa')
     }
     if(props.targetModal=='add') {
       props.asyncAddPatient()
       props.asyncInitData()
       props.closeModal()
-      message.success('Added')
+      message.success('Đã thêm')
     }
     if(props.targetModal=='edit') {
       props.asyncUpdatePatient()
       props.asyncInitData()
       props.closeModal()
-      message.success('Updated')
+      message.success('Đã sửa')
     }
   }
   function handleCloseModal() {

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { AgGridReact } from 'ag-grid-react'
+import actionRenderer from './Doctor/actionRenderer'
 
 const columns = [
     {
@@ -40,13 +41,13 @@ const columns = [
     },
     {
       headerName:'Actions',
-      field:'actions'
+      cellRenderer:'actionRenderer'
     }
   ]
 
-//   const frameworkComponents: any = {
-//     actionRenderer
-//   }
+  const frameworkComponents: any = {
+    actionRenderer
+  }
 
   export const TableDoctor = ({ props }: { props: any }) => {
     function onGridReady (params: any) {
@@ -54,7 +55,7 @@ const columns = [
     }
     return (
       <div style={{ height: '93vh' }} className='ag-theme-balham'>
-        <AgGridReact rowSelection='single' enableSorting={true} enableFilter={true} columnDefs={columns} rowData={props.doctorData} onGridReady={onGridReady} />
+        <AgGridReact rowSelection='single' enableSorting={true} enableFilter={true} columnDefs={columns} rowData={props.doctorData} onGridReady={onGridReady} frameworkComponents={frameworkComponents} />
       </div>
     )
   }

@@ -17,7 +17,6 @@ export const Doctor = {
   state: {
     targetModal: 'none',
     target: '',
-    genderRadio: "male",
     doctorData: [],
     fullname: '',
     gender: 'male',
@@ -27,7 +26,9 @@ export const Doctor = {
     phone: '',
     nationality: 'Viet Nam',
     email: '',
-    refBy: ''
+    refBy: '',
+    password: '',
+    username: ''
   },
   reducers: {
     initEditModal (state: any, doctor: any) {
@@ -43,7 +44,8 @@ export const Doctor = {
         nationality: doctor.nationality,
         email: doctor.email,
         refBy: doctor.refBy,
-        username: doctor.username
+        username: doctor.username,
+        password: doctor.password
       }
     },
     openModal (state: any, target: string) {
@@ -61,7 +63,6 @@ export const Doctor = {
     onGenderRadioChange (state: any, payload: any) {
       return {
         ...state,
-        genderRadio: payload,
         gender: payload
       }
     },
@@ -94,9 +95,9 @@ export const Doctor = {
             query: GQL.GQL_getDoctor
           }
         )
-      console.log(res.data)
+      // console.log(res.data)
       let newDoctorList = res.data.getDoctors.map((doctor: any)=>{
-        console.log(doctor.isEnabled)
+        // console.log(doctor.isEnabled)
         if(doctor.isEnabled===true) {
           return {
             id: doctor._id,
@@ -113,11 +114,11 @@ export const Doctor = {
           }
         }
       })
-      console.log(newDoctorList)
+      // console.log(newDoctorList)
       dispatch.Doctor.setMyState('doctorData',newDoctorList)
     },
     async asyncAddDoctor (payload: any, rootState: any){
-      console.log(rootState.Doctor)
+      // console.log(rootState.Doctor)
       // let newDoctorData = [...rootState.Doctor.doctorData]
       let res : any = await Client().mutate({
         variables: {
@@ -129,7 +130,9 @@ export const Doctor = {
           'phone': rootState.Doctor.phone,
           'nationality': rootState.Doctor.nationality,
           'email': rootState.Doctor.email,
-          'refBy': rootState.Doctor.refBy
+          'refBy': rootState.Doctor.refBy,
+          'username': rootState.Doctor.username,
+          'password': rootState.Doctor.password
         },
         mutation: GQL.GQL_addDoctor
       })
@@ -144,7 +147,16 @@ export const Doctor = {
           mutation: GQL.GQL_removeDoctor
         }
       )
-      console.log(res)
+      // console.log(res)
+      dispatch.Doctor.resetData()
+    },
+    async asyncUpdateDoctor (payload: any, rootState: any) {
+      let res: any = await Client()
+      .mutate({
+        variables: {},
+        mutation: GQL.GQL_removeDoctor
+      })
+      // console.log(res)
       dispatch.Doctor.resetData()
     }
   })

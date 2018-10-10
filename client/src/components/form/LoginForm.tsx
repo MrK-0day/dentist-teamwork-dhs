@@ -17,7 +17,7 @@ export const LoginForm = ({ props }: { props: any }) => {
         <Input onChange={handleChange} value={props.password} name='password' type='password' prefix={<Icon type='lock' />} placeholder='Mật Khẩu' />
       </Form.Item>
       <Form.Item>
-        <Button onClick={onClickLogin} type='primary' ghost block>Đăng Nhập</Button>
+        <Button onClick={onClickLogin} type='primary' ghost block>  Đăng Nhập</Button>
       </Form.Item>
     </Form>
   )

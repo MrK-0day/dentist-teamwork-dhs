@@ -35,9 +35,9 @@ const _ListMenuItem = [
   },
   {
     key:'quanlybacsi',
-    text: 'Bac Si',
-    icon: 'user'
-  }	
+    text: 'Bác sĩ',
+    icon: 'schedule'
+  }
 ]
 
 export const SiderNav = ({ props: { isCollapsed, onCollapsed, setState }, props } : { props: any }) => {

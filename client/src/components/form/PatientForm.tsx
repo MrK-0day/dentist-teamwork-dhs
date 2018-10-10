@@ -89,13 +89,15 @@ class iPatientForm extends React.Component<any, any> {
   }
   render() {
     const { form } = this.props
+    const editKeys = this.props.editKeys
     function addField () {
       const keys = form.getFieldValue('keys')
       const nextKeys = keys.concat(uuid)
       uuid++
       form.setFieldsValue({
-        keys: nextKeys,
+        keys: nextKeys
       });
+      console.log(form.getFieldValue('keys'))
     }
     function removeField (k: any ){
       const keys = form.getFieldValue('keys')
@@ -104,11 +106,15 @@ class iPatientForm extends React.Component<any, any> {
         keys: keys.filter((key: any) => key!== k )
       })
     }
+    function initFieldEdit() {
+      form.setFieldsValue({
+        keys: editKeys
+      })
+    }
     const { getFieldDecorator, getFieldValue } = this.props.form
-
     getFieldDecorator('keys', { initialValue: [] })
     const keys = getFieldValue('keys')
-    const dynamicFields = keys.map((k: any, index: any)=>{
+    const dynamicFieldsAdd = keys.map((k: any, index: any)=>{
       return (
         <FormItem
           {...historyLayout}
@@ -125,6 +131,7 @@ class iPatientForm extends React.Component<any, any> {
               whitespace: true,
               message: 'Input',
             }],
+            initialValue: this.props.medicalHistory[k]
           })(
             <Input placeholder={'Mục ' + index} style={{width: '95%'}}/>
           )}
@@ -138,13 +145,42 @@ class iPatientForm extends React.Component<any, any> {
         </FormItem>
       )
     })
+    const dynamicFieldsEdit = editKeys.map((k: any, index: any)=>{
+      return (
+        <FormItem
+          {...historyLayout}
+          label=' '
+          required={false}
+          key={k}
+          colon={false}
+          style={{marginLeft: '8%'}}
+        >
+          {getFieldDecorator(`records[${k}]`, {
+            validateTrigger: ['onChange', 'onBlur'],
+            rules: [{
+              required: true,
+              whitespace: true,
+              message: 'Input',
+            }],
+            initialValue: this.props.medicalHistory[k]
+          })(
+            <Input placeholder={'Mục ' + index} style={{width: '95%'}}/>
+          )}
+            <Icon
+              className='dynamic-delete-button'
+              type='minus-circle-o'
+              onClick={() => removeField(k)}
+            />
+        </FormItem>
+      )
+    })
     const AddForm = (
       <Form layout='horizontal'>
         <FormItem label='Họ tên'>
           <Input id='fullname' placeholder='Họ tên' onChange={this.handleChange.bind(this)} value={this.props.fullname}/>
         </FormItem>
         <FormItem {...formItemLayout} label='Giới tính'>
-          <RadioGroup onChange={this.handleRadioChange.bind(this)} value={this.props.genderRadio}>
+          <RadioGroup onChange={this.handleRadioChange.bind(this)} value={this.props.gender}>
             <Radio value={'male'}>Nam</Radio>
             <Radio value={'female'}>Nữ</Radio>
             <Radio value={'other'}>Khác</Radio>
@@ -177,7 +213,7 @@ class iPatientForm extends React.Component<any, any> {
           <Input id='refBy' onChange={this.handleChange.bind(this)} value={this.props.refBy}/>
         </FormItem>
         <FormItem label='Lịch sử bệnh án' >
-          {dynamicFields}
+          {dynamicFieldsAdd}
           <Button hidden={this.props.saveBtnHide} size='small' type='dashed' onClick={this.handleHistorySave.bind(this)}>LƯU</Button>
         </FormItem>
         <FormItem>
@@ -190,42 +226,51 @@ class iPatientForm extends React.Component<any, any> {
 
     const EditForm = (
       <Form layout='horizontal'>
-        <FormItem {...formItemLayout} label='Name'>
-          <Input id='fullname' placeholder='Full Name' onChange={this.handleChange.bind(this)} defaultValue={this.props.fullname} value={this.props.fullname}/>
+        <FormItem label='Họ tên'>
+          <Input id='fullname' placeholder='Họ tên' onChange={this.handleChange.bind(this)} defaultValue={this.props.fullname} value={this.props.fullname}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='Gender'>
-          <RadioGroup onChange={this.handleRadioChange.bind(this)} defaultValue={this.props.gender} value={this.props.genderRadio}>
-            <Radio value={'male'}>Male</Radio>
-            <Radio value={'female'}>Female</Radio>
-            <Radio value={'other'}>Other</Radio>
+        <FormItem {...formItemLayout} label='Giới tính'>
+          <RadioGroup onChange={this.handleRadioChange.bind(this)} defaultValue={this.props.gender} value={this.props.gender}>
+            <Radio value={'male'}>Nam</Radio>
+            <Radio value={'female'}>Nữ</Radio>
+            <Radio value={'other'}>Khác</Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem {...formItemLayout} label='Birthdate'>
+        <FormItem label='Ngày sinh'>
           <DatePicker onChange={this.handleDateChange.bind(this)} defaultValue={moment()} format={DateFormat} style={{width: '100%'}}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='E-mail'>
-          <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} value={this.props.email}/>
+        <FormItem label='E-mail'>
+          <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} defaultValue={this.props.email} value={this.props.email}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='Phone'>
-          <Input id='phone' placeholder='Valid phone number' onChange={this.handleChange.bind(this)} style={{ width: '100%' }} value={this.props.phone} />
+        <FormItem label='SDT'>
+          <Input id='phone' placeholder='SDT liên lạc' onChange={this.handleChange.bind(this)} style={{ width: '100%' }} defaultValue={this.props.phone} value={this.props.phone} />
         </FormItem>
-        <FormItem {...formItemLayout} label='Address'>
-          <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' value={this.props.address}/>
+        <FormItem label='Địa chỉ'>
+          <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.phone} value={this.props.address}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='Nationality'>
+        <FormItem label='Quốc gia'>
           <AutoComplete
             filterOption={(inputValue: any, option: any) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
             dataSource={countries}
-            defaultValue={this.props.nationality}
             onSelect={this.handleCountrySelect.bind(this)}
             onChange={this.handleCountryChangeValue.bind(this)}
-          ><Input placeholder='You nationality' ></Input></AutoComplete>
+            defaultValue={this.props.nationality}
+          ><Input placeholder='Nơi định cư' ></Input></AutoComplete>
         </FormItem>
-        <FormItem {...formItemLayout} label='Career'>
-          <Input id='career' placeholder='Your current job' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
+        <FormItem label='Nghề nghiệp'>
+          <Input id='career' placeholder='Nghề nghiệp hiện tại' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
         </FormItem>
-        <FormItem {...formItemLayout} label='Referer'>
-          <Input id='refBy' onChange={this.handleChange.bind(this)} value={this.props.refBy}/>
+        <FormItem label='Người giới thiệu'>
+          <Input id='refBy' onChange={this.handleChange.bind(this)} defaultValue={this.props.refBy} value={this.props.refBy}/>
+        </FormItem>
+        <FormItem label='Lịch sử bệnh án' >
+          {dynamicFieldsEdit}
+          <Button hidden={this.props.saveBtnHide} size='small' type='dashed' onClick={this.handleHistorySave.bind(this)}>LƯU</Button>
+        </FormItem>
+        <FormItem>
+          <Button type="dashed" onClick={addField} style={{ width: '100%' }}>
+            <Icon type="plus" /> Thêm lịch sử bệnh án
+          </Button>
         </FormItem>
       </Form>
     )
@@ -236,7 +281,7 @@ class iPatientForm extends React.Component<any, any> {
       </div>
     )
     if(this.props.targetModal == 'add') return AddForm
-    else if(this.props.targetModal =='ediarr = arr.filter(function(e){return e});t') return EditForm
+    else if(this.props.targetModal =='edit') return EditForm
     else if (this.props.targetModal == 'delete') return DeleteForm
     else return (<div></div>)
   }

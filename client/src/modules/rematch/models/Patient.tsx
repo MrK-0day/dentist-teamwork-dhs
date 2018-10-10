@@ -17,10 +17,9 @@ export const Patient = {
   state: {
     targetModal: 'none',
     target: '',
-    genderRadio: "male",
+    gender:'male',
     patientData: [],
     fullname: '',
-    gender: 'male',
     dob: momentTimeStamp,
     career: '',
     address: '',
@@ -29,7 +28,7 @@ export const Patient = {
     email: '',
     refBy: '',
     medicalHistory: [],
-    saveBtnHide: false
+    editKeys : []
   },
   reducers: {
     initEditModal (state: any, patient: any) {
@@ -44,7 +43,9 @@ export const Patient = {
         phone: patient.phone,
         nationality: patient.nationality,
         email: patient.email,
-        refBy: patient.refBy
+        refBy: patient.refBy,
+        medicalHistory: [...patient.medicalHistory],
+        editKeys: patient.keys
       }
     },
     openModal (state: any, target: string) {
@@ -62,7 +63,6 @@ export const Patient = {
     onGenderRadioChange (state: any, payload: any) {
       return {
         ...state,
-        genderRadio: payload,
         gender: payload
       }
     },
@@ -76,14 +76,16 @@ export const Patient = {
       return{
         ...state,
         fullname: '',
-        gender: '',
         dob: 0,
         career: '',
         address: '',
         phone: '',
         nationality: 'Viet Nam',
         email: '',
-        refBy: ''
+        refBy: '',
+        target: '',
+        gender: 'male',
+        editKeys: []
       }
     }
   },
@@ -95,9 +97,7 @@ export const Patient = {
             query: GQL.GQL_getPatient
           }
         )
-      console.log(res.data.getPatients)
       let newPatientList = res.data.getPatients.map((patient: any)=>{
-        console.log(patient)
         if(patient.isEnabled===true) {
           return {
             id: patient._id,
@@ -117,7 +117,6 @@ export const Patient = {
       dispatch.Patient.setMyState('patientData',newPatientList)
     },
     async asyncAddPatient (payload: any, rootState: any){
-      console.log(rootState.Patient)
       let newPatientData = [...rootState.Patient.patientData]
       let res : any = await Client().mutate({
         variables: {
@@ -145,7 +144,6 @@ export const Patient = {
           mutation: GQL.GQL_removePatient
         }
       )
-      console.log(res)
       dispatch.Patient.resetData()
     },
     async asyncInitUpdatePatient (id: any, rootState: any) {
@@ -158,8 +156,12 @@ export const Patient = {
           query: GQL.GQL_getPatientById
         }
       )
-      console.log(res.data)
-      dispatch.Patient.initEditModal(res.data.patient)
+      let newKeys = res.data.patient.medicalHistory.map((v: any,i: any)=> {return i})
+      let patient = {
+        ...res.data.patient,
+        keys: newKeys
+      }
+      dispatch.Patient.initEditModal(patient)
       dispatch.Patient.openModal('edit')
     },
     async asyncUpdatePatient (payload: any, rootState: any) {
@@ -182,6 +184,6 @@ export const Patient = {
       })
       console.log(res)
       dispatch.Patient.resetData()
-    }
+    },
   })
 }

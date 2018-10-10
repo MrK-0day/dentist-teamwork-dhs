@@ -90,7 +90,7 @@ export const GQL_getPatient = gql`
 export const GQL_getPatientById = gql`
   query GetPatientById($_id: ID!) {
     patient(_id: $_id){
-      _id fullname gender dob career address phone nationality email refBy isEnabled
+      _id fullname gender dob career address phone nationality email refBy isEnabled medicalHistory
     }
   }
 `
@@ -112,8 +112,8 @@ export const GQL_removePatient = gql`
 `
 
 export const GQL_updatePatient = gql`
-  mutation updatePatient ($_id: ID!,$fullname: String!, $gender: String, $dob: String, $career: String, $address: String, $phone: String!, $nationality: String, $email: String, $refBy: String){
-    updatePatient (_id: $_id,fullname: $fullname, gender: $gender, dob:$dob, career: $career, address: $address, phone: $phone, nationality: $nationality, email: $email, refBy: $refBy){
+  mutation updatePatient ($_id: ID!,$fullname: String!, $gender: String, $dob: String, $career: String, $address: String, $phone: String!, $nationality: String, $email: String, $refBy: String, $medicalHistory: [String]){
+    updatePatient (_id: $_id,fullname: $fullname, gender: $gender, dob:$dob, career: $career, address: $address, phone: $phone, nationality: $nationality, email: $email, refBy: $refBy, medicalHistory: $medicalHistory){
       _id fullname gender dob career address phone nationality email refBy
     }
   }

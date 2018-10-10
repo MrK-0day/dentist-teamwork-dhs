@@ -6,6 +6,7 @@ import { AddSchedule } from '../form/AddSchedule'
 export const ModalSchedule = ({ props }: { props: any }) => {
   function onCloseOK () {
     props.onCloseModal()
+    props.resetInitData()
   }
   function onCloseCancel () {
     props.onCloseModal()

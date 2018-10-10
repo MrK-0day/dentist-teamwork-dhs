@@ -78,6 +78,8 @@ export const MedialRecord = {
             break
           }
         }
+      } else {
+        log.pop()
       }
       return {
         ...state,
@@ -120,7 +122,7 @@ export const MedialRecord = {
         teeth: JSON.stringify(rootState.MedialRecord.listtooth),
         createdDate: rootState.MedialRecord.date.unix(),
         treatment: '{}',
-        doctorId: '5badf119883e91274201b543'
+        doctorId: localStorage.getItem('_ID') || '5badf119883e91274201b543'
       }
       let res: any = await Client().mutate({
         variables: data,

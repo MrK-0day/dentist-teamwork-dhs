@@ -8,6 +8,9 @@ export const DrawerAddNoteTooth = ({ props }: { props: any }) => {
   function onCloseOK () {
     props.onCloseDrawNode('OK')
   }
+  function onCloseHuy () {
+    props.onCloseDrawNode('HUY')
+  }
   return (
     <Drawer
       title={`Thêm Ghi Chú Răng ${props.notecount}`}
@@ -19,7 +22,7 @@ export const DrawerAddNoteTooth = ({ props }: { props: any }) => {
     >
       <Form layout='horizontal' style={{ width: '100%' }}>
         {props.visibletooth && <Form.Item><Input.TextArea autoFocus value={props.notetext} name='notetext' onChange={handleChange} rows={12} /></Form.Item>}
-        <Button style={{ float: 'left' }} type='danger' onClick={props.onCloseDrawNode}>Hủy</Button>
+        <Button style={{ float: 'left' }} type='danger' onClick={onCloseHuy}>Hủy</Button>
         <Button style={{ float: 'right' }} type='primary' onClick={onCloseOK}>Thêm</Button>
       </Form>
     </Drawer>

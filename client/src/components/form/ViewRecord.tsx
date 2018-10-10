@@ -16,6 +16,7 @@ export const ViewRecord = ({ props }: { props: any }) => {
     <Form layout='horizontal' style={{ width: '100%' }}>
       <Form.Item {...formItemLayout} label='Mã Hồ  Sơ'>{props.datachitiet.recordNumber}</Form.Item>
       <Form.Item {...formItemLayout} label='Tên Bệnh Nhân'>{props.datachitiet.patient.fullname}</Form.Item>
+      <Form.Item {...formItemLayout} label='Bác Sĩ Điều Trị'>{props.datachitiet.doctor.fullname}</Form.Item>
       <Form.Item {...formItemLayout} label='Số Lần Khám'>{props.datachitiet.no}</Form.Item>
       <Form.Item {...formItemLayout} label='Giai Đoạn'>0</Form.Item>
       {listteeth.map((value: any, index: any) => {

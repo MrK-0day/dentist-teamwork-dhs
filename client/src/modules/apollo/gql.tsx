@@ -142,3 +142,11 @@ export const GQL_removeDoctor = gql`
     }
   }
 `
+
+export const GQL_getRooms = gql`
+  {
+    getRooms {
+      _id code name
+    }
+  }
+`

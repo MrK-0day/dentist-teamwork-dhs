@@ -71,7 +71,7 @@ engine.listen({
 })
 
 engine.on('error', () => {
-  console.log("There was an error starting the server or Engine.")
+  console.log(`There was an error starting the server or Engine.`)
   // The app failed to start, we probably want to kill the server
   process.exit(1)
 })

@@ -226,8 +226,8 @@ const resolvers = {
     // FIXME: Login
     signIn: (root, args) => {
       async function findUser (username, password) {
-        let encryptedPassword = SHA256(password).toString()
-        const result = await Doctor.findOne({ username, password: encryptedPassword })
+        // let encryptedPassword = SHA256(password).toString()
+        const result = await Doctor.findOne({ username, password })
         if (!result) throw new ApolloError(`Wrong username or password`, 400)
         const token = jwt.sign({
           sub: result
@@ -362,7 +362,7 @@ const resolvers = {
         const doctorCount = await Doctor.countDocuments({ username: args.username })
         if (doctorCount !== 0) throw new ApolloError('Username has already used', 400)
 
-        args.password = SHA256(args.password).toString()
+        // args.password = SHA256(args.password).toString()
         args._id = mongoose.Types.ObjectId()
         args.isEnabled = true
         let newDoctor = new Doctor(args)

@@ -1,4 +1,4 @@
-  "use strict"
+'use strict'
 require('dotenv').config()
 const { createServer } = require('http')
 const express = require('express')
@@ -7,6 +7,7 @@ const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const depthLimit = require('graphql-depth-limit')
 
 const MONGO_URL = process.env['MONGO_URL'] || `localhost:27017`
 const PORT = process.env['PORT'] || 4000
@@ -31,19 +32,17 @@ const server = new ApolloServer({
       'editor.cursorShape': 'line'
     }
   },
+  validationRules: [ depthLimit(3) ],
   formatError: error => {
     return { message: error.message, httpCode: error.extensions.code }
   },
   context: async (root) => {
-    // console.log(root)
     let req = root.req
     if (root.connection) return { }
-    console.log(req.headers.authorization)
     if (!req.headers) return { }
     const token = req.headers.authorization || ''
     try {
       let decoded = await jwt.verify(token.split(' ')[1], 'digihcs')
-      console.log(decoded.sub)
       const user = decoded.sub
       return { user }
     } catch (err) {

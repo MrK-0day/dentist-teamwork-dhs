@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const TreatmentRegimentSchema = new Schema({
-  _id:       String, // !
+  _id: String, // !
   diseaseId: String, // !
-  content:   String, // !
+  content: String, // !
   isEnabled: Boolean // !
 })
 

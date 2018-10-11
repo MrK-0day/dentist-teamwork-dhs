@@ -2,8 +2,7 @@ const { gql, ApolloError } = require('apollo-server-express')
 // const pubsub = new PubSub()
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
-const SHA256 = require('crypto-js/sha256')
-// const DataLoader = require('dataloader')
+// const SHA256 = require('crypto-js/sha256')
 // const _ = require('lodash')
 
 // models
@@ -203,26 +202,32 @@ const typeDefs = gql`
   }
 `
 
+// const batchDoctorLoader = () => {
+//   return Doctor.find({ isEnabled: true })
+// }
+
+// const doctorLoader = new DataLoader(batchDoctorLoader)
+
 const resolvers = {
   Query: {
-    disease:                (root, args, context, info) => Disease.findById(args._id),
-    getDiseases:            (root, args, context, info) => Disease.find({ isEnabled: true }),
-    doctor:                 (root, args, context, info) => Doctor.findById(args._id),
-    getDoctors:             (root, args, context, info) => Doctor.find({ isEnabled: true }),
-    patient:                (root, args, context, info) => Patient.findById(args._id),
-    getPatients:            (root, args, context, info) => Patient.find({ isEnabled: true }),
-    record:                 (root, args, context, info) => Record.findById(args._id),
-    getRecords:             (root, args, context, info) => Record.find({ isEnabled: true }),
-    room:                   (root, args, context, info) => Room.findById(args._id),
-    getRooms:               (root, args, context, info) => Room.find({ isEnabled: true }),
-    schedule:               (root, args, context, info) => Schedule.findById(args._id),
-    getSchedules:           (root, args, context, info) => Schedule.find({ isEnabled: true }),
-    step:                   (root, args, context, info) => Step.findById(args._id),
-    getSteps:               (root, args, context, info) => Step.find({ isEnabled: true }),
-    treatmentRegimen:       (root, args, context, info) => TreatmentRegimen.findById(args._id),
-    getTreatmentRegimens:   (root, args, context, info) => TreatmentRegimen.find({ isEnabled: true }),
-    treatmentStep:          (root, args, context, info) => TreatmentStep.findById(args._id),
-    getTreatmentSteps:      (root, args, context, info) => TreatmentStep.find({ isEnabled: true }),
+    disease: (root, args, context, info) => Disease.findById(args._id),
+    getDiseases: (root, args, context, info) => Disease.find({ isEnabled: true }),
+    doctor: (root, args, context, info) => Doctor.findById(args._id),
+    getDoctors: (root, args, context, info) => Doctor.find({ isEnabled: true }),
+    patient: (root, args, context, info) => Patient.findById(args._id),
+    getPatients: (root, args, context, info) => Patient.find({ isEnabled: true }),
+    record: (root, args, context, info) => Record.findById(args._id),
+    getRecords: (root, args, context, info) => Record.find({ isEnabled: true }),
+    room: (root, args, context, info) => Room.findById(args._id),
+    getRooms: (root, args, context, info) => Room.find({ isEnabled: true }),
+    schedule: (root, args, context, info) => Schedule.findById(args._id),
+    getSchedules: (root, args, context, info) => Schedule.find({ isEnabled: true }),
+    step: (root, args, context, info) => Step.findById(args._id),
+    getSteps: (root, args, context, info) => Step.find({ isEnabled: true }),
+    treatmentRegimen: (root, args, context, info) => TreatmentRegimen.findById(args._id),
+    getTreatmentRegimens: (root, args, context, info) => TreatmentRegimen.find({ isEnabled: true }),
+    treatmentStep: (root, args, context, info) => TreatmentStep.findById(args._id),
+    getTreatmentSteps: (root, args, context, info) => TreatmentStep.find({ isEnabled: true }),
 
     // FIXME: Login
     signIn: (root, args) => {

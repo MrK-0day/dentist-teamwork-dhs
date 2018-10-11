@@ -31,6 +31,7 @@ const typeDefs = gql`
     username:       String
     password:       String
     fullname:       String
+    token:          String
     specialize:     String
     gender:         String
     dob:            String
@@ -232,7 +233,9 @@ const resolvers = {
         const token = jwt.sign({
           sub: result
         }, 'digihcs')
-        return { userData: result, token }
+
+        result.token = token
+        return result
       }
       return findUser(args.username, args.password)
     }

@@ -6,7 +6,7 @@ const { ApolloEngine } = require('apollo-engine')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
 const mongoose = require('mongoose')
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 const MONGO_URL = process.env['MONGO_URL'] || `localhost:27017`
 const PORT = process.env['PORT'] || 4000
@@ -33,25 +33,26 @@ const server = new ApolloServer({
   },
   formatError: error => {
     return { message: error.message, httpCode: error.extensions.code }
+  },
+  context: async (root) => {
+    // console.log(root)
+    let req = root.req
+    if (root.connection) return { }
+    console.log(req.headers.authorization)
+    if (!req.headers) return { }
+    const token = req.headers.authorization || ''
+    try {
+      let decoded = await jwt.verify(token.split(' ')[1], 'digihcs')
+      console.log(decoded.sub)
+      const user = decoded.sub
+      return { user }
+    } catch (err) {
+      console.log(err)
+    }
+    return { }
   }
-  // context: async (root) => {
-  //   // console.log(root)
-  //   let req = root.req
-  //   if (root.connection) return { }
-  //   console.log(req.headers.authorization)
-  //   if (!req.headers) return { }
-  //   const token = req.headers.authorization || ''
-  //   try {
-  //     let decoded = await jwt.verify(token.split(' ')[1], 'digihcs')
-  //     console.log(decoded.sub)
-  //     const user = decoded.sub
-  //     return { user }
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  //   return { }
-  // }
 })
+
 server.applyMiddleware({ app })
 
 const engine = new ApolloEngine({

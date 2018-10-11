@@ -1,9 +1,9 @@
 const { gql, ApolloError } = require('apollo-server-express')
 // const pubsub = new PubSub()
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const SHA256 = require('crypto-js/sha256')
-const DataLoader = require('dataloader')
+// const DataLoader = require('dataloader')
 // const _ = require('lodash')
 
 // models
@@ -229,7 +229,10 @@ const resolvers = {
         let encryptedPassword = SHA256(password).toString()
         const result = await Doctor.findOne({ username, password: encryptedPassword })
         if (!result) throw new ApolloError(`Wrong username or password`, 400)
-        return result
+        const token = jwt.sign({
+          sub: result
+        }, 'digihcs')
+        return { userData: result, token }
       }
       return findUser(args.username, args.password)
     }

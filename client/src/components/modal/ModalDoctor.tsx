@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Modal, message } from 'antd'
 
-import PatientForm from '../form/PatientForm'
+import DoctorForm from '../form/DoctorForm'
 
-export const ModalPatient = ({ props }: { props: any }) => {
+export const ModalDoctor = ({ props }: { props: any }) => {
   var modalTitle = ''
   if(props.targetModal === 'add') modalTitle = 'Thêm bác sĩ'
   else if (props.targetModal === 'delete') modalTitle = 'Xóa bác sĩ'
@@ -36,7 +36,7 @@ export const ModalPatient = ({ props }: { props: any }) => {
   return (
     <Modal maskClosable={false} onOk={handleModal} title={modalTitle} visible={props.targetModal!='none'?true: false}
        onCancel={handleCloseModal}>
-      <PatientForm />
+      <DoctorForm />
     </Modal>
   )
 }

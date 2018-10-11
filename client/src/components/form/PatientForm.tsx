@@ -1,17 +1,14 @@
+//EXTERNAL LIBRARY
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Form, Input, Icon, Row, Col, Divider ,Checkbox, Button, Radio, DatePicker, AutoComplete } from 'antd'
-
+let moment = require('moment')
+//LOCAL RESOURCES
 import { phone_prefixes, countries } from '../misc/regionData'
 import { DateFormat } from '../misc/const'
-let moment = require('moment')
-
 //CONST
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
-
-let uuid = 0
-
 const formItemLayout = {
   labelCol: {
     sm: { span: 4 }
@@ -29,6 +26,7 @@ const historyLayout = {
     sm: { span: 22 }
   }
 }
+let uuid = 0
 
 //CLASS
 class iPatientForm extends React.Component<any, any> {

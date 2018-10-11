@@ -102,7 +102,7 @@ export const Patient = {
           return {
             id: patient._id,
             fullname: patient.fullname,
-            gender: patient.gender,
+            gender: patient.gender==='male'?'Nam':patient.gender==='female'?'Nữ': 'Khác',
             dob: moment(patient.dob*1000).format(`DD-MM-YYYY`),
             career: patient.career,
             address: patient.address,
@@ -114,6 +114,7 @@ export const Patient = {
           }
         }
       })
+      console.log(newPatientList)
       dispatch.Patient.setMyState('patientData',newPatientList)
     },
     async asyncAddPatient (payload: any, rootState: any){

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
  import { TableDoctor } from '../ag-grid/TableDoctor'
 // import { ModalDoctor } from '../modal/ModalDoctor'
 import { Button, Row, Col, Input } from 'antd';
+import { ModalDoctor } from '../modal/ModalDoctor';
  const Search = Input.Search
 class ContentDoctor extends React.Component<any, any> {
   componentDidMount() {
@@ -16,6 +17,7 @@ class ContentDoctor extends React.Component<any, any> {
           <Col span={20}><Search placeholder='Doctor code'></Search></Col>
           <Col span={4}><Button className='patient-header-btn' type='primary' icon='plus' onClick={()=>this.props.openModal('add')} >Add Doctor</Button></Col>
         </Row>
+        <ModalDoctor props={this.props} />
         <TableDoctor props={this.props} />
       </div>
     )

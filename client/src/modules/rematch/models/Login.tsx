@@ -1,3 +1,6 @@
+import { Client } from '../../apollo/apollo'
+import { GQL_signin } from '../../apollo/gql'
+const SHA256 = require('crypto-js/sha256')
 export const Login = {
   state: {
     username: '',
@@ -13,7 +16,18 @@ export const Login = {
   },
   effects: (dispatch: any) => ({
     async onLogin (payload: any, rootState: any) {
-      localStorage.setItem('TOKEN', 'cc')
+      let passHash = SHA256(rootState.Login.password).toString()
+      let { data: { signIn: res } }: any = await Client().query({
+        variables: {
+          username: rootState.Login.username,
+          password: passHash
+        },
+        query: GQL_signin
+      })
+      // console.log(res)
+      localStorage.setItem('TOKEN', res.token)
+      localStorage.setItem('_ID', res._id)
+      // localStorage.setItem('TOKEN', 'cc')
       payload.push('/')
     }
   })

@@ -150,3 +150,11 @@ export const GQL_getRooms = gql`
     }
   }
 `
+
+export const GQL_signin = gql`
+  query signIn ($username: String!, $password: String!) {
+    signIn (username: $username, password: $password) {
+      _id token
+    }
+  }
+`

@@ -236,7 +236,7 @@ class iPatientForm extends React.Component<any, any> {
           <Input id='phone' placeholder='SDT liên lạc' onChange={this.handleChange.bind(this)} style={{ width: '100%' }} defaultValue={this.props.phone} value={this.props.phone} />
         </FormItem>
         <FormItem label='Địa chỉ'>
-          <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.phone} value={this.props.address}/>
+          <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.address} value={this.props.address}/>
         </FormItem>
         <FormItem label='Quốc gia'>
           {countryAutoComplete}

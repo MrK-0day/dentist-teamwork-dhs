@@ -72,7 +72,7 @@ class iDoctorForm extends React.Component<any, any> {
           onChange={this.handleCountryChangeValue.bind(this)}
         ><Input placeholder='Nơi định cư' ></Input></AutoComplete>
       )
-      const AddForm = (
+      const EditForm = (
         <Form layout='horizontal'>
           <FormItem label='Họ tên'>
             <Input id='fullname' placeholder='Họ tên' onChange={this.handleChange.bind(this)} defaultValue={this.props.fullname} value={this.props.fullname}/>
@@ -100,18 +100,59 @@ class iDoctorForm extends React.Component<any, any> {
             <Input id='phone' placeholder='SDT liên lạc' onChange={this.handleChange.bind(this)} style={{ width: '100%' }} defaultValue={this.props.phone} value={this.props.phone} />
           </FormItem>
           <FormItem label='Địa chỉ'>
-            <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.phone} value={this.props.address}/>
+            <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' defaultValue={this.props.address} value={this.props.address}/>
           </FormItem>
           <FormItem label='Quốc gia'>
             {countryAutoComplete}
           </FormItem>
           <FormItem label='Chuyên khoa'>
-            <Input id='career' placeholder='Chuyên khoa hiện tại' onChange={this.handleChange.bind(this)} defaultValue={this.props.career} value={this.props.career}/>
+            <Input id='career' placeholder='Chuyên khoa hiện tại' onChange={this.handleChange.bind(this)} defaultValue={this.props.specialize} value={this.props.specialize}/>
           </FormItem>
         </Form>
       )
-      const EditForm = (<div>Edit</div>)
-      const DeleteForm = (<div>Delete</div>)
+      const AddForm = (
+        <Form layout='horizontal'>
+          <FormItem label='Họ tên'>
+            <Input id='fullname' placeholder='Họ tên' onChange={this.handleChange.bind(this)} value={this.props.fullname}/>
+          </FormItem>
+          <FormItem {...formItemLayout} label='Giới tính'>
+            <RadioGroup onChange={this.handleRadioChange.bind(this)} value={this.props.gender}>
+              <Radio value={'male'}>Nam</Radio>
+              <Radio value={'female'}>Nữ</Radio>
+              <Radio value={'other'}>Khác</Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem>
+            <Input id='username' placeholder='=Tên đăng nhập'></Input>
+          </FormItem>
+          <FormItem>
+            <Input id='password' type='password'></Input>
+          </FormItem>
+          <FormItem label='Ngày sinh'>
+            <DatePicker onChange={this.handleDateChange.bind(this)} defaultValue={moment()} format={DateFormat} style={{width: '100%'}}/>
+          </FormItem>
+          <FormItem label='E-mail'>
+            <Input id='email' placeholder='E-mail e.g aaa@bbb.ccc' onChange={this.handleChange.bind(this)} value={this.props.email}/>
+          </FormItem>
+          <FormItem label='SDT'>
+            <Input id='phone' placeholder='SDT liên lạc' onChange={this.handleChange.bind(this)} style={{ width: '100%' }} value={this.props.phone} />
+          </FormItem>
+          <FormItem label='Địa chỉ'>
+            <Input id='address' onChange={this.handleChange.bind(this)} placeholder='Full address' value={this.props.address}/>
+          </FormItem>
+          <FormItem label='Quốc gia'>
+            {countryAutoComplete}
+          </FormItem>
+          <FormItem label='Chuyên khoa'>
+            <Input id='career' placeholder='Chuyên khoa hiện tại' onChange={this.handleChange.bind(this)} value={this.props.specialize}/>
+          </FormItem>
+        </Form>
+      )
+      const DeleteForm = (
+        <div>
+          <h2>Are you sure to remove {this.props.fullname}</h2>
+        </div>
+      )
 
       //RENDER
       if(this.props.targetModal == 'add') return AddForm
